@@ -1,0 +1,29 @@
+@import "tailwindcss";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme {
+  /* 專業、沉穩的靛藍色系 (Indigo) */
+  --color-primary: #4f46e5; /* Indigo 600 */
+  --color-primary-light: #e0e7ff; /* Indigo 100 */
+  --color-primary-dark: #4338ca; /* Indigo 700 */
+  
+  /* 柔和的背景與文字色系 */
+  --color-background-light: #f1f5f9; /* Slate 100 - 稍微加深一點，減少大面積白色的刺眼感 */
+  --color-background-dark: #0f172a; /* Slate 900 */
+  --color-text-main: #334155; /* Slate 700 */
+  --color-text-muted: #64748b; /* Slate 500 */
+  --color-border-light: #cbd5e1; /* Slate 300 - 邊框稍微加深，增加立體感 */
+  --color-border-dark: #1e293b; /* Slate 800 */
+  
+  --font-display: "Inter", sans-serif;
+}
+
+@layer base {
+  body {
+    @apply bg-background-light text-text-main font-display min-h-screen flex transition-colors duration-300;
+  }
+  .dark body {
+    @apply bg-background-dark text-slate-200;
+  }
+}
