@@ -32,17 +32,6 @@ export const QuoteSummary: React.FC = () => {
             <h3 className="text-lg font-bold text-text-main dark:text-slate-200">計算設定</h3>
             <div className="flex items-center gap-1 bg-background-light dark:bg-slate-900 p-1.5 rounded-lg">
               <button
-                onClick={() => updateSettings({ mode: 'manual' })}
-                className={clsx(
-                  'px-4 py-2 text-sm font-bold rounded transition-all',
-                  settings.mode === 'manual'
-                    ? 'bg-white dark:bg-slate-800 shadow-sm text-primary dark:text-indigo-400'
-                    : 'text-text-muted hover:text-text-main dark:hover:text-white'
-                )}
-              >
-                人工計算
-              </button>
-              <button
                 onClick={() => updateSettings({ mode: 'system' })}
                 className={clsx(
                   'px-4 py-2 text-sm font-bold rounded transition-all',
@@ -52,6 +41,17 @@ export const QuoteSummary: React.FC = () => {
                 )}
               >
                 系統計算
+              </button>
+              <button
+                onClick={() => updateSettings({ mode: 'manual' })}
+                className={clsx(
+                  'px-4 py-2 text-sm font-bold rounded transition-all',
+                  settings.mode === 'manual'
+                    ? 'bg-white dark:bg-slate-800 shadow-sm text-primary dark:text-indigo-400'
+                    : 'text-text-muted hover:text-text-main dark:hover:text-white'
+                )}
+              >
+                人工計算
               </button>
             </div>
           </div>

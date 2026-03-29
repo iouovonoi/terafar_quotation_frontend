@@ -3,11 +3,15 @@ import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { useQuoteStore } from '../store/useQuoteStore';
 
+type PageType = 'quote' | 'material' | 'customer' | 'history';
+
 interface AppLayoutProps {
   children: React.ReactNode;
+  onPageChange: (page: PageType) => void;
+  currentPage: PageType;
 }
 
-export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
+export const AppLayout: React.FC<AppLayoutProps> = ({ children, onPageChange, currentPage }) => {
   const { isDarkMode } = useQuoteStore();
 
   useEffect(() => {
@@ -20,12 +24,10 @@ export const AppLayout: React.FC<AppLayoutProps> = ({ children }) => {
 
   return (
     <div className="flex min-h-screen w-full bg-background-light dark:bg-background-dark font-display text-[#181111] dark:text-white transition-colors duration-300">
-      <Sidebar />
+      <Sidebar onPageChange={onPageChange} currentPage={currentPage} />
       <main className="flex-1 flex flex-col min-w-0">
         <Header />
-        <div className="p-8 max-w-6xl mx-auto w-full space-y-6">
-          {children}
-        </div>
+        {children}
       </main>
     </div>
   );

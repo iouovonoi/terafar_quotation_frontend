@@ -1,0 +1,416 @@
+[
+  {
+    "modelNumber": "BJ00127012",
+    "buyInPrice": 36.5,
+    "costPrice": 98.4,
+    "weight": 2.69,
+    "length": 12.7,
+    "width": 12.7,
+    "thickness": 1.2
+  },
+  {
+    "modelNumber": "BJ00190012",
+    "buyInPrice": 33,
+    "costPrice": 136.6,
+    "weight": 4.14,
+    "length": 19,
+    "width": 19,
+    "thickness": 1.2
+  },
+  {
+    "modelNumber": "BJ00190015",
+    "buyInPrice": 24.2,
+    "costPrice": 123.6,
+    "weight": 5.11,
+    "length": 19,
+    "width": 19,
+    "thickness": 1.5
+  },
+  {
+    "modelNumber": "BJ00200012",
+    "buyInPrice": 36.5,
+    "costPrice": 159.4,
+    "weight": 4.37,
+    "length": 20,
+    "width": 20,
+    "thickness": 1.2
+  },
+  {
+    "modelNumber": "BJ00200015",
+    "buyInPrice": 33,
+    "costPrice": 177.9,
+    "weight": 5.39,
+    "length": 20,
+    "width": 20,
+    "thickness": 1.5
+  },
+  {
+    "modelNumber": "BJ00200020",
+    "buyInPrice": 32.5,
+    "costPrice": 228.8,
+    "weight": 7.04,
+    "length": 20,
+    "width": 20,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00250012",
+    "buyInPrice": 33,
+    "costPrice": 181.9,
+    "weight": 5.51,
+    "length": 25,
+    "width": 25,
+    "thickness": 1.2
+  },
+  {
+    "modelNumber": "BJ00250015",
+    "buyInPrice": 24.2,
+    "costPrice": 165.2,
+    "weight": 6.82,
+    "length": 25,
+    "width": 25,
+    "thickness": 1.5
+  },
+  {
+    "modelNumber": "BJ00250020",
+    "buyInPrice": 23.5,
+    "costPrice": 210.3,
+    "weight": 8.95,
+    "length": 25,
+    "width": 25,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00250023",
+    "buyInPrice": 23.5,
+    "costPrice": 239.4,
+    "weight": 10.19,
+    "length": 25,
+    "width": 25,
+    "thickness": 2.3
+  },
+  {
+    "modelNumber": "BJ00300015",
+    "buyInPrice": 24.2,
+    "costPrice": 199.8,
+    "weight": 8.26,
+    "length": 30,
+    "width": 30,
+    "thickness": 1.5
+  },
+  {
+    "modelNumber": "BJ00300020",
+    "buyInPrice": 23.5,
+    "costPrice": 255.2,
+    "weight": 10.86,
+    "length": 30,
+    "width": 30,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00300028",
+    "buyInPrice": null,
+    "costPrice": 0,
+    "weight": 14.87,
+    "length": 30,
+    "width": 30,
+    "thickness": 2.8
+  },
+  {
+    "modelNumber": "BJ00300030",
+    "buyInPrice": 23.5,
+    "costPrice": 372.2,
+    "weight": 15.84,
+    "length": 30,
+    "width": 30,
+    "thickness": 3
+  },
+  {
+    "modelNumber": "BJ00320020",
+    "buyInPrice": null,
+    "costPrice": 0,
+    "weight": 11.62,
+    "length": 32,
+    "width": 32,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00380015",
+    "buyInPrice": 24.2,
+    "costPrice": 255.3,
+    "weight": 10.55,
+    "length": 38,
+    "width": 38,
+    "thickness": 1.5
+  },
+  {
+    "modelNumber": "BJ00380020",
+    "buyInPrice": 23.5,
+    "costPrice": 327,
+    "weight": 13.91,
+    "length": 38,
+    "width": 38,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00380030",
+    "buyInPrice": 23.5,
+    "costPrice": 479.9,
+    "weight": 20.42,
+    "length": 38,
+    "width": 38,
+    "thickness": 3
+  },
+  {
+    "modelNumber": "BJ00400020",
+    "buyInPrice": 23.5,
+    "costPrice": 345,
+    "weight": 14.68,
+    "length": 40,
+    "width": 40,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00400023",
+    "buyInPrice": 23.5,
+    "costPrice": 394.3,
+    "weight": 16.78,
+    "length": 40,
+    "width": 40,
+    "thickness": 2.3
+  },
+  {
+    "modelNumber": "BJ00400028",
+    "buyInPrice": 23.5,
+    "costPrice": 475,
+    "weight": 20.21,
+    "length": 40,
+    "width": 40,
+    "thickness": 2.8
+  },
+  {
+    "modelNumber": "BJ00400030",
+    "buyInPrice": 23.5,
+    "costPrice": 506.9,
+    "weight": 21.57,
+    "length": 40,
+    "width": 40,
+    "thickness": 3
+  },
+  {
+    "modelNumber": "BJ00400038",
+    "buyInPrice": null,
+    "costPrice": 0,
+    "weight": 26.86,
+    "length": 40,
+    "width": 40,
+    "thickness": 3.8
+  },
+  {
+    "modelNumber": "BJ00500015",
+    "buyInPrice": 24.2,
+    "costPrice": 338.5,
+    "weight": 13.99,
+    "length": 50,
+    "width": 50,
+    "thickness": 1.5
+  },
+  {
+    "modelNumber": "BJ00500020",
+    "buyInPrice": 23.5,
+    "costPrice": 434.7,
+    "weight": 18.5,
+    "length": 50,
+    "width": 50,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00500023",
+    "buyInPrice": 23.5,
+    "costPrice": 497.5,
+    "weight": 21.17,
+    "length": 50,
+    "width": 50,
+    "thickness": 2.3
+  },
+  {
+    "modelNumber": "BJ00500028",
+    "buyInPrice": 23.5,
+    "costPrice": 600.7,
+    "weight": 25.56,
+    "length": 50,
+    "width": 50,
+    "thickness": 2.8
+  },
+  {
+    "modelNumber": "BJ00500030",
+    "buyInPrice": 23.5,
+    "costPrice": 641.5,
+    "weight": 27.3,
+    "length": 50,
+    "width": 50,
+    "thickness": 3
+  },
+  {
+    "modelNumber": "BJ00500032",
+    "buyInPrice": 23.5,
+    "costPrice": 682,
+    "weight": 29.02,
+    "length": 50,
+    "width": 50,
+    "thickness": 3.2
+  },
+  {
+    "modelNumber": "BJ00500040",
+    "buyInPrice": 23.5,
+    "costPrice": 841.2,
+    "weight": 35.8,
+    "length": 50,
+    "width": 50,
+    "thickness": 4
+  },
+  {
+    "modelNumber": "BJ00500045",
+    "buyInPrice": 23.5,
+    "costPrice": 938.5,
+    "weight": 39.93,
+    "length": 50,
+    "width": 50,
+    "thickness": 4.5
+  },
+  {
+    "modelNumber": "BJ00500060",
+    "buyInPrice": 25,
+    "costPrice": 1297.4,
+    "weight": 51.9,
+    "length": 50,
+    "width": 50,
+    "thickness": 6
+  },
+  {
+    "modelNumber": "BJ00600020",
+    "buyInPrice": 23.5,
+    "costPrice": 524.5,
+    "weight": 22.32,
+    "length": 60,
+    "width": 60,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00600030",
+    "buyInPrice": 23.5,
+    "costPrice": 776.1,
+    "weight": 33.03,
+    "length": 60,
+    "width": 60,
+    "thickness": 3
+  },
+  {
+    "modelNumber": "BJ00600040",
+    "buyInPrice": 23.5,
+    "costPrice": 1020.8,
+    "weight": 43.44,
+    "length": 60,
+    "width": 60,
+    "thickness": 4
+  },
+  {
+    "modelNumber": "BJ00600045",
+    "buyInPrice": 23.5,
+    "costPrice": 1140.4,
+    "weight": 48.53,
+    "length": 60,
+    "width": 60,
+    "thickness": 4.5
+  },
+  {
+    "modelNumber": "BJ00750020",
+    "buyInPrice": 23.5,
+    "costPrice": 659.1,
+    "weight": 28.05,
+    "length": 75,
+    "width": 75,
+    "thickness": 2
+  },
+  {
+    "modelNumber": "BJ00750028",
+    "buyInPrice": null,
+    "costPrice": 0,
+    "weight": 38.93,
+    "length": 75,
+    "width": 75,
+    "thickness": 2.8
+  },
+  {
+    "modelNumber": "BJ00750030",
+    "buyInPrice": 23.5,
+    "costPrice": 978.1,
+    "weight": 41.62,
+    "length": 75,
+    "width": 75,
+    "thickness": 3
+  },
+  {
+    "modelNumber": "BJ00750040",
+    "buyInPrice": 23.5,
+    "costPrice": 1290,
+    "weight": 54.9,
+    "length": 75,
+    "width": 75,
+    "thickness": 4
+  },
+  {
+    "modelNumber": "BJ00750045",
+    "buyInPrice": 23.5,
+    "costPrice": 1443.4,
+    "weight": 61.42,
+    "length": 75,
+    "width": 75,
+    "thickness": 4.5
+  },
+  {
+    "modelNumber": "BJ00750060",
+    "buyInPrice": 25,
+    "costPrice": 2013.6,
+    "weight": 80.54,
+    "length": 75,
+    "width": 75,
+    "thickness": 6
+  },
+  {
+    "modelNumber": "BJ00800030",
+    "buyInPrice": 25,
+    "costPrice": 1112.2,
+    "weight": 44.49,
+    "length": 80,
+    "width": 80,
+    "thickness": 3
+  },
+  {
+    "modelNumber": "BJ00800040",
+    "buyInPrice": 25,
+    "costPrice": 1467.9,
+    "weight": 58.72,
+    "length": 80,
+    "width": 80,
+    "thickness": 4
+  },
+  {
+    "modelNumber": "BJ00800045",
+    "buyInPrice": 25,
+    "costPrice": 1642.9,
+    "weight": 65.72,
+    "length": 80,
+    "width": 80,
+    "thickness": 4.5
+  },
+  {
+    "modelNumber": "BJ00800060",
+    "buyInPrice": null,
+    "costPrice": 0,
+    "weight": 86.27,
+    "length": 80,
+    "width": 80,
+    "thickness": 6
+  }
+]

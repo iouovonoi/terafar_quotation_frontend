@@ -4,7 +4,14 @@ import { Calculator, Warehouse, Users, FileText, User, LogOut, ChevronLeft, Chev
 import clsx from 'clsx';
 import logo from '../assets/logo.png';
 
-export const Sidebar: React.FC = () => {
+type PageType = 'quote' | 'material' | 'customer' | 'history';
+
+interface SidebarProps {
+  onPageChange: (page: PageType) => void;
+  currentPage: PageType;
+}
+
+export const Sidebar: React.FC<SidebarProps> = ({ onPageChange, currentPage }) => {
   const { isSidebarOpen, toggleSidebar } = useQuoteStore();
 
   return (
@@ -44,10 +51,34 @@ export const Sidebar: React.FC = () => {
 
         {/* Navigation */}
         <nav className={clsx('flex flex-col', isSidebarOpen ? 'gap-1 px-6' : 'gap-4')}>
-          <NavItem icon={<Calculator size={22} />} label="報價計算" active isOpen={isSidebarOpen} />
-          <NavItem icon={<Warehouse size={22} />} label="材料管理" isOpen={isSidebarOpen} />
-          <NavItem icon={<Users size={22} />} label="客戶管理" isOpen={isSidebarOpen} />
-          <NavItem icon={<FileText size={22} />} label="報價記錄" isOpen={isSidebarOpen} />
+          <NavItem 
+            icon={<Calculator size={22} />} 
+            label="報價計算" 
+            active={currentPage === 'quote'}
+            isOpen={isSidebarOpen}
+            onClick={() => onPageChange('quote')}
+          />
+          <NavItem 
+            icon={<Warehouse size={22} />} 
+            label="材料管理" 
+            active={currentPage === 'material'}
+            isOpen={isSidebarOpen}
+            onClick={() => onPageChange('material')}
+          />
+          <NavItem 
+            icon={<Users size={22} />} 
+            label="客戶管理" 
+            active={currentPage === 'customer'}
+            isOpen={isSidebarOpen}
+            onClick={() => onPageChange('customer')}
+          />
+          <NavItem 
+            icon={<FileText size={22} />} 
+            label="報價記錄" 
+            active={currentPage === 'history'}
+            isOpen={isSidebarOpen}
+            onClick={() => onPageChange('history')}
+          />
         </nav>
       </div>
 
@@ -68,14 +99,15 @@ interface NavItemProps {
   label: string;
   active?: boolean;
   isOpen: boolean;
+  onClick?: () => void;
 }
 
-const NavItem: React.FC<NavItemProps> = ({ icon, label, active, isOpen }) => {
+const NavItem: React.FC<NavItemProps> = ({ icon, label, active, isOpen, onClick }) => {
   return (
-    <a
-      href="#"
+    <button
+      onClick={onClick}
       className={clsx(
-        'flex items-center rounded-lg transition-colors group relative',
+        'flex items-center rounded-lg transition-colors group relative cursor-pointer border-0 bg-transparent text-left w-full',
         isOpen ? 'gap-3 px-3 py-2 overflow-hidden whitespace-nowrap' : 'justify-center size-12',
         active
           ? 'bg-primary-light text-primary dark:bg-primary/20 dark:text-indigo-400 font-semibold'
@@ -91,6 +123,6 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, isOpen }) => {
           {label}
         </span>
       )}
-    </a>
+    </button>
   );
 };

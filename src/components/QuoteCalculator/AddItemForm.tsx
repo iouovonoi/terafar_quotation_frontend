@@ -1,12 +1,12 @@
-import React, { useState, useRef } from 'react';
+import React, { useState, useRef, useMemo } from 'react';
 import { useQuoteStore } from '../../store/useQuoteStore';
 import { productTypes, mockMaterials } from '../../data/mockData';
-import { PlusCircle, Plus } from 'lucide-react';
+import { PlusCircle, Plus, Info } from 'lucide-react';
 
 export const AddItemForm: React.FC = () => {
   const { addItem } = useQuoteStore();
   const [productType, setProductType] = useState(productTypes[0]);
-  const [materialId, setMaterialId] = useState(mockMaterials[0].id);
+  const [materialId, setMaterialId] = useState('');
   const [length, setLength] = useState<number | ''>('');
   const [quantity, setQuantity] = useState<number | ''>('');
   const [error, setError] = useState<string | null>(null);
@@ -14,6 +14,34 @@ export const AddItemForm: React.FC = () => {
   const lengthInputRef = useRef<HTMLInputElement>(null);
   const quantityInputRef = useRef<HTMLInputElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
+
+  // 根據產品類型過濾材料
+  const filteredMaterials = useMemo(() => {
+    return mockMaterials.filter(m => m.type === productType);
+  }, [productType]);
+
+  // 當產品類型改變時，重置材料ID
+  const handleProductTypeChange = (newType: string) => {
+    setProductType(newType);
+    const firstMaterial = mockMaterials.find(m => m.type === newType);
+    setMaterialId(firstMaterial?.id || '');
+  };
+
+  // 取得當前選擇的材料
+  const selectedMaterial = mockMaterials.find(m => m.id === materialId);
+
+  // 計算進價（根據材料類型）
+  const calculateCostPrice = () => {
+    if (!selectedMaterial || !length || !quantity) return 0;
+
+    if (productType === '方管' && selectedMaterial.costPrice) {
+      // 對於方管，使用進價成本
+      return selectedMaterial.costPrice * quantity;
+    } else {
+      // 對於其他材料，使用單位價格 * 長度 * 數量
+      return selectedMaterial.unitPrice * length * quantity;
+    }
+  };
 
   const handleAdd = () => {
     if (!length || length <= 0) {
@@ -26,12 +54,12 @@ export const AddItemForm: React.FC = () => {
       quantityInputRef.current?.focus();
       return;
     }
+    if (!selectedMaterial) {
+      setError('請選擇材料');
+      return;
+    }
 
-    const material = mockMaterials.find(m => m.id === materialId);
-    if (!material) return;
-
-    // Mock calculation for cost price
-    const costPrice = material.unitPrice * length * quantity;
+    const costPrice = calculateCostPrice();
 
     addItem({
       productType,
@@ -74,7 +102,7 @@ export const AddItemForm: React.FC = () => {
           <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">製品種類</label>
           <select
             value={productType}
-            onChange={(e) => setProductType(e.target.value)}
+            onChange={(e) => handleProductTypeChange(e.target.value)}
             className="w-full bg-white dark:bg-slate-900 border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
           >
             {productTypes.map(type => (
@@ -84,13 +112,16 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div className="col-span-1 md:col-span-1">
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">材料 ID</label>
+          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">
+            {productType === '方管' ? '型號' : '材料 ID'}
+          </label>
           <select
             value={materialId}
             onChange={(e) => setMaterialId(e.target.value)}
             className="w-full bg-white dark:bg-slate-900 border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
           >
-            {mockMaterials.filter(m => m.type === productType).map(m => (
+            <option value="">請選擇...</option>
+            {filteredMaterials.map(m => (
               <option key={m.id} value={m.id}>{m.name}</option>
             ))}
           </select>
@@ -133,6 +164,36 @@ export const AddItemForm: React.FC = () => {
           </button>
         </div>
       </div>
+
+      {/* 材料詳細資訊顯示 */}
+      {selectedMaterial && productType === '方管' && (
+        <div className="mt-4 p-4 bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-200 dark:border-slate-600">
+          <div className="flex gap-2 mb-2">
+            <Info size={16} className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
+            <p className="text-sm font-semibold text-blue-900 dark:text-blue-300">材料資訊</p>
+          </div>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+            <div>
+              <p className="text-text-muted dark:text-slate-400">進價</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">$ {selectedMaterial.buyInPrice}</p>
+            </div>
+            <div>
+              <p className="text-text-muted dark:text-slate-400">進價成本</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">$ {selectedMaterial.costPrice?.toFixed(2)}</p>
+            </div>
+            <div>
+              <p className="text-text-muted dark:text-slate-400">尺寸 (L×W×厚)</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">
+                {selectedMaterial.length}×{selectedMaterial.width}×{selectedMaterial.thickness} mm
+              </p>
+            </div>
+            <div>
+              <p className="text-text-muted dark:text-slate-400">重量</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.weight} kg</p>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

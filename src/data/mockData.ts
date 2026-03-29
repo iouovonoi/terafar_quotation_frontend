@@ -1,4 +1,20 @@
-import type { Material, Customer } from '../types';
+import type { Material, Customer, SquareTube } from '../types';
+import squaretubesData from './squaretubes.json';
+
+// 方管數據映射到 Material 格式
+const squareTubeMaterials: Material[] = squaretubesData.map((tube: SquareTube) => ({
+  id: tube.modelNumber,
+  type: '方管',
+  name: tube.modelNumber,
+  unitPrice: tube.buyInPrice || 0,
+  modelNumber: tube.modelNumber,
+  buyInPrice: tube.buyInPrice || 0,
+  costPrice: tube.costPrice,
+  weight: tube.weight,
+  length: tube.length,
+  width: tube.width,
+  thickness: tube.thickness,
+}));
 
 export const mockMaterials: Material[] = [
   { id: 'A1', type: '圓管', name: 'A1', unitPrice: 2.0 }, // 每 mm 2元
@@ -6,6 +22,7 @@ export const mockMaterials: Material[] = [
   { id: 'C3', type: '圓管', name: 'C3', unitPrice: 0.939 }, // 55mm * 120 = 6600mm, 6200 / 6600 = 0.939
   { id: 'D4', type: '圓鐵', name: 'D4', unitPrice: 3.5 },
   { id: 'E5', type: '四角鐵', name: 'E5', unitPrice: 4.2 },
+  ...squareTubeMaterials,
 ];
 
 export const mockCustomers: Customer[] = [
@@ -16,4 +33,4 @@ export const mockCustomers: Customer[] = [
   { id: 'EEE', name: 'EEE', discount: 0.05 },
 ];
 
-export const productTypes = ['圓管', '圓鐵', '四角鐵'];
+export const productTypes = ['圓管', '圓鐵', '四角鐵', '方管'];
