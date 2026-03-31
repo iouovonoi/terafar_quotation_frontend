@@ -46,9 +46,9 @@ export const QuoteTable: React.FC = () => {
     try {
       const payload = {
         進價成本: item.costPrice,
-        長: item.length,
-        寬: item.width,
-        厚度: item.thickness,
+        '長(mm)': item.length,
+        '寬(mm)': item.width,
+        '厚度(mm)': item.thickness,
         數量: item.quantity,
         截面積: item.crossSectionArea,
         裁切幾種長度: Math.floor(item.numberOfCuttingLengths),
