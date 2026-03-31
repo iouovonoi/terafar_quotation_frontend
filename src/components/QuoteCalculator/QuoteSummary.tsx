@@ -21,26 +21,26 @@ export const QuoteSummary: React.FC = () => {
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
-      <div className="p-12 bg-background-light/50 dark:bg-slate-900/50">
-        <div className="flex-1 space-y-6">
-          <div className="flex justify-between items-center text-lg pb-6 mb-4 border-b border-border-light dark:border-border-dark">
+      <div className="p-5 bg-background-light/50 dark:bg-slate-900/50">
+        <div className="flex-1 space-y-3">
+          <div className="flex justify-between items-center text-sm pb-3 mb-2 border-b border-border-light dark:border-border-dark">
             <span className="text-text-muted font-medium">進價總和</span>
             <span className="font-semibold text-text-main dark:text-slate-200">
               ${totalCostPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
 
-          <div className="flex justify-between items-center text-lg pt-4">
+          <div className="flex justify-between items-center text-sm pt-2">
             <span className="text-text-muted font-medium">報價金額</span>
             <span className="font-semibold text-text-main dark:text-slate-200">
               ${totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
             </span>
           </div>
 
-          <div className="pt-8 border-t border-dashed border-border-light dark:border-border-dark mt-8 flex justify-between items-baseline">
+          <div className="pt-4 border-t border-dashed border-border-light dark:border-border-dark mt-4 flex justify-between items-baseline">
             <div>
-              <p className="text-xs font-bold text-text-muted tracking-widest mb-2">最終報價</p>
-              <p className="text-5xl font-black text-primary dark:text-indigo-400">
+              <p className="text-xs font-bold text-text-muted tracking-widest mb-1">最終報價</p>
+              <p className="text-2xl font-black text-primary dark:text-indigo-400">
                 ${totalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </p>
             </div>

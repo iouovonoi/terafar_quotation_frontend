@@ -22,10 +22,12 @@ export interface Material {
   thickness?: number; // 厚度(mm)
 }
 
-export interface Customer {
+export type PageType = 'quote' | 'material' | 'customer' | 'history';
+
+export interface ExtraCharge {
   id: string;
-  name: string;
-  discount: number;
+  name: string;   // e.g. '運費', '折扣', '加工費'
+  amount: number;  // 正數=加項, 負數=減項
 }
 
 export interface QuoteItem {
@@ -45,17 +47,11 @@ export interface QuoteItem {
   crossSectionArea: number; // 截面積 = 寬 × 厚度
   unitPrice?: number; // ML模型預測的單價
   amount?: number; // 金額 = 單價 × 數量（可手動調整）
+  note?: string; // 備註
+  extraCharges?: ExtraCharge[]; // 額外加減項目
   // 手動調整乘數
   cutMultiplier?: number; // 切工乘數 (default: 1)
   weightMultiplier?: number; // 重量乘數 (default: 1)
   customerMultiplier?: number; // 客戶乘數 (default: 1)
   manualAmount?: number; // 人工計算金額
-}
-
-export interface CalcSettings {
-  mode: 'manual' | 'system';
-  cutMultiplier: number;
-  weightMultiplier: number;
-  customerId: string;
-  discount: number;
 }

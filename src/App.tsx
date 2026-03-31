@@ -2,8 +2,7 @@ import { useState } from 'react';
 import { AppLayout } from './components/AppLayout';
 import { QuoteCalculatorPage } from './pages/QuoteCalculatorPage';
 import { MaterialManagementPage } from './pages/MaterialManagementPage';
-
-type PageType = 'quote' | 'material' | 'customer' | 'history';
+import type { PageType } from './types';
 
 function App() {
   const [currentPage, setCurrentPage] = useState<PageType>('quote');

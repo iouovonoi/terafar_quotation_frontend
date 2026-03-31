@@ -1,6 +1,5 @@
 import { create } from 'zustand';
-import type { QuoteItem, CalcSettings } from '../types';
-import { mockCustomers } from '../data/mockData';
+import type { QuoteItem } from '../types';
 
 interface QuoteState {
   // Sidebar state
@@ -17,11 +16,6 @@ interface QuoteState {
   removeItem: (id: string) => void;
   clearItems: () => void;
   updateItem: (id: string, updates: Partial<QuoteItem>) => void;
-
-  // Calculation Settings
-  settings: CalcSettings;
-  updateSettings: (newSettings: Partial<CalcSettings>) => void;
-  setCustomer: (customerId: string) => void;
 }
 
 export const useQuoteStore = create<QuoteState>((set) => ({
@@ -44,25 +38,4 @@ export const useQuoteStore = create<QuoteState>((set) => ({
       item.id === id ? { ...item, ...updates } : item
     )
   })),
-
-  settings: {
-    mode: 'manual',
-    cutMultiplier: 1.25,
-    weightMultiplier: 5.0,
-    customerId: 'CCC',
-    discount: 0.15,
-  },
-  updateSettings: (newSettings) => set((state) => ({
-    settings: { ...state.settings, ...newSettings }
-  })),
-  setCustomer: (customerId) => set((state) => {
-    const customer = mockCustomers.find(c => c.id === customerId);
-    return {
-      settings: {
-        ...state.settings,
-        customerId,
-        discount: customer ? customer.discount : 0
-      }
-    };
-  }),
 }));

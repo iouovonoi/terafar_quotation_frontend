@@ -5,10 +5,17 @@ import { QuoteSummary } from '../components/QuoteCalculator/QuoteSummary';
 
 export const QuoteCalculatorPage: React.FC = () => {
   return (
-    <div className="p-8 max-w-6xl mx-auto w-full space-y-6">
-      <AddItemForm />
-      <QuoteTable />
-      <QuoteSummary />
+    <div className="p-10 max-w-screen-2xl mx-auto w-full flex flex-col xl:flex-row gap-8 items-start">
+      {/* 左側：輸入表單與明細表格 */}
+      <div className="flex-1 min-w-0 space-y-8 w-full">
+        <AddItemForm />
+        <QuoteTable />
+      </div>
+
+      {/* 右側：浮動的總結與儲存區塊 */}
+      <div className="w-full xl:w-[280px] 2xl:w-[320px] shrink-0 xl:sticky xl:top-24">
+        <QuoteSummary />
+      </div>
     </div>
   );
 };

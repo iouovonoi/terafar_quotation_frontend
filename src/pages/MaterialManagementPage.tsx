@@ -33,10 +33,23 @@ export const MaterialManagementPage: React.FC = () => {
   // 是否為方管類型
   const isSquareTube = currentType === '方管';
 
+  const downloadCsv = (rows: (string | number)[][], filename: string) => {
+    const csv = rows.map(row => row.join(',')).join('\n');
+    const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
+    const link = document.createElement('a');
+    link.href = URL.createObjectURL(blob);
+    link.download = filename;
+    link.style.visibility = 'hidden';
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
   const handleExport = () => {
+    const filename = `${currentType}_${new Date().toLocaleDateString()}.csv`;
+
     if (isSquareTube) {
-      // 方管導出格式
-      const csv = [
+      downloadCsv([
         ['型號', '進價', '進價成本', '全支重量', '長(mm)', '寬(mm)', '厚度(mm)'],
         ...displayMaterials.map(m => [
           m.modelNumber || '',
@@ -47,41 +60,12 @@ export const MaterialManagementPage: React.FC = () => {
           m.width || '',
           m.thickness || ''
         ])
-      ]
-        .map(row => row.join(','))
-        .join('\n');
-
-      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `${currentType}_${new Date().toLocaleDateString()}.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+      ], filename);
     } else {
-      // 其他類型導出格式
-      const csv = [
+      downloadCsv([
         ['ID', '名稱', '單位進價'],
-        ...displayMaterials.map(m => [
-          m.id,
-          m.name,
-          m.unitPrice
-        ])
-      ]
-        .map(row => row.join(','))
-        .join('\n');
-
-      const blob = new Blob(['\ufeff' + csv], { type: 'text/csv;charset=utf-8;' });
-      const link = document.createElement('a');
-      const url = URL.createObjectURL(blob);
-      link.setAttribute('href', url);
-      link.setAttribute('download', `${currentType}_${new Date().toLocaleDateString()}.csv`);
-      link.style.visibility = 'hidden';
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
+        ...displayMaterials.map(m => [m.id, m.name, m.unitPrice])
+      ], filename);
     }
   };
 

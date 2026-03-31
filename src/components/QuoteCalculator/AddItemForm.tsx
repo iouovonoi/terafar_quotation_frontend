@@ -5,13 +5,14 @@ import { PlusCircle, Plus, HelpCircle } from 'lucide-react';
 
 export const AddItemForm: React.FC = () => {
   const { addItem } = useQuoteStore();
-  const [productType, setProductType] = useState(productTypes[0]);
+  const [productType, setProductType] = useState('');
   const [materialId, setMaterialId] = useState('');
   const [cuttingMethod, setCuttingMethod] = useState<'full' | 'half' | 'actual'>('full');
   const [numberOfCuttingLengths, setNumberOfCuttingLengths] = useState<number | ''>('');
   const [quantity, setQuantity] = useState<number | ''>('');
   const [customerId, setCustomerId] = useState('');
   const [costPriceOverride, setCostPriceOverride] = useState<number | ''>('');
+  const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
 
@@ -39,12 +40,16 @@ export const AddItemForm: React.FC = () => {
 
   const handleAdd = () => {
     // 驗證
+    if (!productType) {
+      setError('請選擇製品種類');
+      return;
+    }
     if (!selectedMaterial) {
       setError('請選擇材料');
       return;
     }
     if (!numberOfCuttingLengths || numberOfCuttingLengths <= 0) {
-      setError('請輸入有效的裁切幾種長');
+      setError('請輸入有效的裁切幾種長度');
       return;
     }
     if (!quantity || quantity <= 0) {
@@ -72,6 +77,7 @@ export const AddItemForm: React.FC = () => {
       customerId,
       costPrice: costPrice as number,
       crossSectionArea,
+      note: note.trim() || undefined,
     });
 
     // Reset form
@@ -79,28 +85,32 @@ export const AddItemForm: React.FC = () => {
     setQuantity('');
     setCostPriceOverride('');
     setCustomerId('');
+    setNote('');
     setError(null);
   };
 
+  const inputClass = "w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-sm h-10 focus:border-primary focus:ring-primary dark:text-slate-200";
+
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark p-8">
-      <div className="flex items-center justify-between mb-8">
-        <h3 className="text-lg font-bold flex items-center gap-2 text-text-main dark:text-slate-200">
-          <PlusCircle className="text-primary dark:text-indigo-400" size={22} />
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark p-6">
+      <div className="flex items-center justify-between mb-5">
+        <h3 className="text-base font-bold flex items-center gap-2 text-text-main dark:text-slate-200">
+          <PlusCircle className="text-primary dark:text-indigo-400" size={20} />
           輸入區
         </h3>
         {error && <span className="text-sm text-red-500 font-medium">{error}</span>}
       </div>
 
       {/* First Row */}
-      <div className="grid grid-cols-1 md:grid-cols-6 gap-5 mb-8">
+      <div className="grid grid-cols-1 md:grid-cols-3 xl:grid-cols-7 gap-4 mb-5">
         <div>
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">製品種類</label>
+          <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">製品種類</label>
           <select
             value={productType}
             onChange={(e) => handleProductTypeChange(e.target.value)}
-            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className={inputClass}
           >
+            <option value="">請選擇...</option>
             {productTypes.map(type => (
               <option key={type} value={type}>{type}</option>
             ))}
@@ -108,11 +118,11 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">材料ID</label>
+          <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">材料ID</label>
           <select
             value={materialId}
             onChange={(e) => setMaterialId(e.target.value)}
-            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className={inputClass}
           >
             <option value="">請選擇...</option>
             {filteredMaterials.map(m => (
@@ -122,11 +132,11 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">切法</label>
+          <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">切法</label>
           <select
             value={cuttingMethod}
             onChange={(e) => setCuttingMethod(e.target.value as 'full' | 'half' | 'actual')}
-            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className={inputClass}
           >
             <option value="full">全支</option>
             <option value="half">半切</option>
@@ -135,8 +145,8 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div className="relative">
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5 flex items-center gap-1">
-            裁切幾種長
+          <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5 flex items-center gap-1">
+            裁切幾種長度
             <button
               type="button"
               onMouseEnter={() => setShowHelpTooltip(true)}
@@ -144,15 +154,15 @@ export const AddItemForm: React.FC = () => {
               className="text-text-muted hover:text-primary dark:hover:text-indigo-400"
               title="輸入共有幾種不同的裁切長度"
             >
-              <HelpCircle size={16} />
+              <HelpCircle size={14} />
             </button>
           </label>
           <input
             type="number"
             value={numberOfCuttingLengths}
-            onChange={(e) => setNumberOfCuttingLengths(Number(e.target.value) || '')}
+            onChange={(e) => setNumberOfCuttingLengths(e.target.value === '' ? '' : Number(e.target.value))}
             placeholder="例如: 3"
-            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className={inputClass}
           />
           {showHelpTooltip && (
             <div className="absolute bottom-full left-0 mb-2 p-2 bg-slate-900 dark:bg-slate-700 text-white text-xs rounded-lg whitespace-nowrap z-10">
@@ -162,32 +172,43 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">數量</label>
+          <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">數量</label>
           <input
             type="number"
             value={quantity}
-            onChange={(e) => setQuantity(Number(e.target.value) || '')}
+            onChange={(e) => setQuantity(e.target.value === '' ? '' : Number(e.target.value))}
             placeholder="例如: 5"
-            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className={inputClass}
           />
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">客戶編號</label>
+          <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">客戶編號</label>
           <input
             type="text"
             value={customerId}
             onChange={(e) => setCustomerId(e.target.value)}
             placeholder="例如: 1C16164"
-            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className={inputClass}
+          />
+        </div>
+
+        <div>
+          <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">備註</label>
+          <input
+            type="text"
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder="選填"
+            className={inputClass}
           />
         </div>
       </div>
 
       {/* Material Info and Cost Price Row */}
       {selectedMaterial && (
-        <div className="bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-200 dark:border-slate-600 p-6 mb-8">
-          <div className="grid grid-cols-1 md:grid-cols-6 gap-5 text-sm">
+        <div className="bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-200 dark:border-slate-600 p-4 mb-5">
+          <div className="grid grid-cols-2 md:grid-cols-3 xl:grid-cols-6 gap-4 text-sm">
             <div>
               <p className="text-text-muted dark:text-slate-400 text-xs font-semibold uppercase">長(mm)</p>
               <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.length || '-'}</p>
@@ -214,7 +235,7 @@ export const AddItemForm: React.FC = () => {
                 type="number"
                 value={costPriceOverride !== '' ? costPriceOverride : selectedMaterial.costPrice || ''}
                 onChange={(e) => setCostPriceOverride(Number(e.target.value) || '')}
-                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-10 focus:border-primary focus:ring-primary dark:text-slate-200"
+                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-sm h-9 focus:border-primary focus:ring-primary dark:text-slate-200"
               />
             </div>
           </div>
@@ -226,9 +247,9 @@ export const AddItemForm: React.FC = () => {
         <button
           ref={addButtonRef}
           onClick={handleAdd}
-          className="bg-primary hover:bg-primary-dark text-white font-bold px-8 h-12 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm"
+          className="bg-primary hover:bg-primary-dark text-white font-bold px-6 h-10 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm text-sm"
         >
-          <Plus size={22} />
+          <Plus size={18} />
           新增
         </button>
       </div>

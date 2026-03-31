@@ -2,8 +2,7 @@ import React, { useEffect } from 'react';
 import { Sidebar } from './Sidebar';
 import { Header } from './Header';
 import { useQuoteStore } from '../store/useQuoteStore';
-
-type PageType = 'quote' | 'material' | 'customer' | 'history';
+import type { PageType } from '../types';
 
 interface AppLayoutProps {
   children: React.ReactNode;

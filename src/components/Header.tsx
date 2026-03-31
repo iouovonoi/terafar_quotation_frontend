@@ -12,7 +12,7 @@ export const Header: React.FC = () => {
   }, []);
 
   const formattedDate = time.toISOString().split('T')[0];
-  const formattedTime = time.toTimeString().split('T')[1].split('.')[0];
+  const formattedTime = time.toTimeString().split(' ')[0];
 
   return (
     <header className="flex items-center justify-between border-b border-solid border-border-light dark:border-border-dark bg-white dark:bg-slate-800 px-8 py-3 sticky top-0 z-10 shadow-sm">

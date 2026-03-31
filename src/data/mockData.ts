@@ -1,4 +1,4 @@
-import type { Material, Customer, SquareTube } from '../types';
+import type { Material, SquareTube } from '../types';
 import squaretubesData from './squaretubes.json';
 
 // 方管數據映射到 Material 格式
@@ -75,12 +75,4 @@ export const mockMaterials: Material[] = [
   ...squareTubeMaterials,
 ];
 
-export const mockCustomers: Customer[] = [
-  { id: 'AAA', name: 'AAA', discount: 0.10 },
-  { id: 'BBB', name: 'BBB', discount: 0.12 },
-  { id: 'CCC', name: 'CCC', discount: 0.15 },
-  { id: 'DDD', name: 'DDD', discount: 0.20 },
-  { id: 'EEE', name: 'EEE', discount: 0.05 },
-];
-
-export const productTypes = ['圓管', '圓鐵', '四角鐵', '方管'];
+export const productTypes = ['方管', '圓管', '圓鐵', '四角鐵'];

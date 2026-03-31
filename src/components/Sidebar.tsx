@@ -3,8 +3,7 @@ import { useQuoteStore } from '../store/useQuoteStore';
 import { Calculator, Warehouse, Users, FileText, User, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import clsx from 'clsx';
 import logo from '../assets/logo.png';
-
-type PageType = 'quote' | 'material' | 'customer' | 'history';
+import type { PageType } from '../types';
 
 interface SidebarProps {
   onPageChange: (page: PageType) => void;
