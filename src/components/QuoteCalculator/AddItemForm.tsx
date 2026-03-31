@@ -1,18 +1,20 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { useQuoteStore } from '../../store/useQuoteStore';
 import { productTypes, mockMaterials } from '../../data/mockData';
-import { PlusCircle, Plus, Info } from 'lucide-react';
+import { PlusCircle, Plus, HelpCircle } from 'lucide-react';
 
 export const AddItemForm: React.FC = () => {
   const { addItem } = useQuoteStore();
   const [productType, setProductType] = useState(productTypes[0]);
   const [materialId, setMaterialId] = useState('');
-  const [length, setLength] = useState<number | ''>('');
+  const [cuttingMethod, setCuttingMethod] = useState<'full' | 'half' | 'actual'>('full');
+  const [numberOfCuttingLengths, setNumberOfCuttingLengths] = useState<number | ''>('');
   const [quantity, setQuantity] = useState<number | ''>('');
+  const [customerId, setCustomerId] = useState('');
+  const [costPriceOverride, setCostPriceOverride] = useState<number | ''>('');
   const [error, setError] = useState<string | null>(null);
+  const [showHelpTooltip, setShowHelpTooltip] = useState(false);
 
-  const lengthInputRef = useRef<HTMLInputElement>(null);
-  const quantityInputRef = useRef<HTMLInputElement>(null);
   const addButtonRef = useRef<HTMLButtonElement>(null);
 
   // 根據產品類型過濾材料
@@ -30,80 +32,74 @@ export const AddItemForm: React.FC = () => {
   // 取得當前選擇的材料
   const selectedMaterial = mockMaterials.find(m => m.id === materialId);
 
-  // 計算進價（根據材料類型）
-  const calculateCostPrice = () => {
-    if (!selectedMaterial || !length || !quantity) return 0;
-
-    if (productType === '方管' && selectedMaterial.costPrice) {
-      // 對於方管，使用進價成本
-      return selectedMaterial.costPrice * quantity;
-    } else {
-      // 對於其他材料，使用單位價格 * 長度 * 數量
-      return selectedMaterial.unitPrice * length * quantity;
-    }
-  };
+  // 計算截面積
+  const crossSectionArea = selectedMaterial && selectedMaterial.width && selectedMaterial.thickness
+    ? Math.round(selectedMaterial.width * selectedMaterial.thickness * 100) / 100
+    : 0;
 
   const handleAdd = () => {
-    if (!length || length <= 0) {
-      setError('請輸入有效的裁切長度');
-      lengthInputRef.current?.focus();
-      return;
-    }
-    if (!quantity || quantity <= 0) {
-      setError('請輸入有效的數量');
-      quantityInputRef.current?.focus();
-      return;
-    }
+    // 驗證
     if (!selectedMaterial) {
       setError('請選擇材料');
       return;
     }
+    if (!numberOfCuttingLengths || numberOfCuttingLengths <= 0) {
+      setError('請輸入有效的裁切幾種長');
+      return;
+    }
+    if (!quantity || quantity <= 0) {
+      setError('請輸入有效的數量');
+      return;
+    }
+    if (!customerId.trim()) {
+      setError('請輸入客戶編號');
+      return;
+    }
 
-    const costPrice = calculateCostPrice();
+    const costPrice = costPriceOverride !== '' ? costPriceOverride : (selectedMaterial.costPrice || 0);
 
     addItem({
       productType,
       materialId,
-      length,
-      quantity,
-      costPrice,
+      materialName: selectedMaterial.name,
+      length: selectedMaterial.length || 0,
+      width: selectedMaterial.width || 0,
+      thickness: selectedMaterial.thickness || 0,
+      weight: selectedMaterial.weight || 0,
+      cuttingMethod,
+      numberOfCuttingLengths: numberOfCuttingLengths as number,
+      quantity: quantity as number,
+      customerId,
+      costPrice: costPrice as number,
+      crossSectionArea,
     });
 
-    // Reset form and focus back to length for quick entry
-    setLength('');
+    // Reset form
+    setNumberOfCuttingLengths('');
     setQuantity('');
+    setCostPriceOverride('');
+    setCustomerId('');
     setError(null);
-    lengthInputRef.current?.focus();
-  };
-
-  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement | HTMLButtonElement>, nextRef: React.RefObject<HTMLElement | null>) => {
-    if (e.key === 'Enter') {
-      e.preventDefault();
-      if (nextRef.current) {
-        nextRef.current.focus();
-      } else {
-        handleAdd();
-      }
-    }
   };
 
   return (
-    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark p-6">
-      <div className="flex items-center justify-between mb-4">
+    <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark p-8">
+      <div className="flex items-center justify-between mb-8">
         <h3 className="text-lg font-bold flex items-center gap-2 text-text-main dark:text-slate-200">
           <PlusCircle className="text-primary dark:text-indigo-400" size={22} />
-          新增至表格
+          輸入區
         </h3>
         {error && <span className="text-sm text-red-500 font-medium">{error}</span>}
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-5 gap-4 items-end">
-        <div className="col-span-1 md:col-span-1">
+      {/* First Row */}
+      <div className="grid grid-cols-1 md:grid-cols-6 gap-5 mb-8">
+        <div>
           <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">製品種類</label>
           <select
             value={productType}
             onChange={(e) => handleProductTypeChange(e.target.value)}
-            className="w-full bg-white dark:bg-slate-900 border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
           >
             {productTypes.map(type => (
               <option key={type} value={type}>{type}</option>
@@ -111,14 +107,12 @@ export const AddItemForm: React.FC = () => {
           </select>
         </div>
 
-        <div className="col-span-1 md:col-span-1">
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">
-            {productType === '方管' ? '型號' : '材料 ID'}
-          </label>
+        <div>
+          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">材料ID</label>
           <select
             value={materialId}
             onChange={(e) => setMaterialId(e.target.value)}
-            className="w-full bg-white dark:bg-slate-900 border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
           >
             <option value="">請選擇...</option>
             {filteredMaterials.map(m => (
@@ -127,73 +121,117 @@ export const AddItemForm: React.FC = () => {
           </select>
         </div>
 
-        <div className="col-span-1 md:col-span-1">
-          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">裁切長度 (mm)</label>
-          <input
-            ref={lengthInputRef}
-            type="number"
-            value={length}
-            onChange={(e) => setLength(Number(e.target.value) || '')}
-            onKeyDown={(e) => handleKeyDown(e, quantityInputRef as React.RefObject<HTMLElement | null>)}
-            placeholder="例如: 12"
-            className={`w-full bg-white dark:bg-slate-900 border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200 ${error && !length ? 'border-red-500' : ''}`}
-          />
+        <div>
+          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">切法</label>
+          <select
+            value={cuttingMethod}
+            onChange={(e) => setCuttingMethod(e.target.value as 'full' | 'half' | 'actual')}
+            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+          >
+            <option value="full">全支</option>
+            <option value="half">半切</option>
+            <option value="actual">切實</option>
+          </select>
         </div>
 
-        <div className="col-span-1 md:col-span-1">
+        <div className="relative">
+          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5 flex items-center gap-1">
+            裁切幾種長
+            <button
+              type="button"
+              onMouseEnter={() => setShowHelpTooltip(true)}
+              onMouseLeave={() => setShowHelpTooltip(false)}
+              className="text-text-muted hover:text-primary dark:hover:text-indigo-400"
+              title="輸入共有幾種不同的裁切長度"
+            >
+              <HelpCircle size={16} />
+            </button>
+          </label>
+          <input
+            type="number"
+            value={numberOfCuttingLengths}
+            onChange={(e) => setNumberOfCuttingLengths(Number(e.target.value) || '')}
+            placeholder="例如: 3"
+            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+          />
+          {showHelpTooltip && (
+            <div className="absolute bottom-full left-0 mb-2 p-2 bg-slate-900 dark:bg-slate-700 text-white text-xs rounded-lg whitespace-nowrap z-10">
+              輸入共有幾種不同的裁切長度
+            </div>
+          )}
+        </div>
+
+        <div>
           <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">數量</label>
           <input
-            ref={quantityInputRef}
             type="number"
             value={quantity}
             onChange={(e) => setQuantity(Number(e.target.value) || '')}
-            onKeyDown={(e) => handleKeyDown(e, addButtonRef as React.RefObject<HTMLElement | null>)}
-            placeholder="例如: 1"
-            className={`w-full bg-white dark:bg-slate-900 border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200 ${error && !quantity ? 'border-red-500' : ''}`}
+            placeholder="例如: 5"
+            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
           />
         </div>
 
         <div>
-          <button
-            ref={addButtonRef}
-            onClick={handleAdd}
-            className="w-full bg-primary hover:bg-primary-dark text-white font-bold h-12 text-base rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm"
-          >
-            <Plus size={22} />
-            新增
-          </button>
+          <label className="block text-sm font-semibold text-text-muted uppercase mb-1.5">客戶編號</label>
+          <input
+            type="text"
+            value={customerId}
+            onChange={(e) => setCustomerId(e.target.value)}
+            placeholder="例如: 1C16164"
+            className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-12 focus:border-primary focus:ring-primary dark:text-slate-200"
+          />
         </div>
       </div>
 
-      {/* 材料詳細資訊顯示 */}
-      {selectedMaterial && productType === '方管' && (
-        <div className="mt-4 p-4 bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-200 dark:border-slate-600">
-          <div className="flex gap-2 mb-2">
-            <Info size={16} className="text-blue-600 dark:text-blue-400 flex-shrink-0 mt-0.5" />
-            <p className="text-sm font-semibold text-blue-900 dark:text-blue-300">材料資訊</p>
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-3 text-xs">
+      {/* Material Info and Cost Price Row */}
+      {selectedMaterial && (
+        <div className="bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-200 dark:border-slate-600 p-6 mb-8">
+          <div className="grid grid-cols-1 md:grid-cols-6 gap-5 text-sm">
             <div>
-              <p className="text-text-muted dark:text-slate-400">進價</p>
-              <p className="font-semibold text-text-main dark:text-slate-200">$ {selectedMaterial.buyInPrice}</p>
+              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold uppercase">長(mm)</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.length || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400">進價成本</p>
-              <p className="font-semibold text-text-main dark:text-slate-200">$ {selectedMaterial.costPrice?.toFixed(2)}</p>
+              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold uppercase">寬(mm)</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.width || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400">尺寸 (L×W×厚)</p>
-              <p className="font-semibold text-text-main dark:text-slate-200">
-                {selectedMaterial.length}×{selectedMaterial.width}×{selectedMaterial.thickness} mm
-              </p>
+              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold uppercase">厚度(mm)</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.thickness || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400">重量</p>
-              <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.weight} kg</p>
+              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold uppercase">截面積(mm²)</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">{crossSectionArea}</p>
+            </div>
+            <div>
+              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold uppercase">重量(kg)</p>
+              <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.weight || '-'}</p>
+            </div>
+            <div>
+              <label className="text-text-muted dark:text-slate-400 text-xs font-semibold uppercase block mb-1">進價成本</label>
+              <input
+                type="number"
+                value={costPriceOverride !== '' ? costPriceOverride : selectedMaterial.costPrice || ''}
+                onChange={(e) => setCostPriceOverride(Number(e.target.value) || '')}
+                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-base h-10 focus:border-primary focus:ring-primary dark:text-slate-200"
+              />
             </div>
           </div>
         </div>
       )}
+
+      {/* Add Button */}
+      <div className="flex justify-end">
+        <button
+          ref={addButtonRef}
+          onClick={handleAdd}
+          className="bg-primary hover:bg-primary-dark text-white font-bold px-8 h-12 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm"
+        >
+          <Plus size={22} />
+          新增
+        </button>
+      </div>
     </div>
   );
 };

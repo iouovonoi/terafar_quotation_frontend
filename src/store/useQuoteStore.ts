@@ -16,6 +16,7 @@ interface QuoteState {
   addItem: (item: Omit<QuoteItem, 'id'>) => void;
   removeItem: (id: string) => void;
   clearItems: () => void;
+  updateItem: (id: string, updates: Partial<QuoteItem>) => void;
 
   // Calculation Settings
   settings: CalcSettings;
@@ -30,12 +31,7 @@ export const useQuoteStore = create<QuoteState>((set) => ({
   isDarkMode: false,
   toggleDarkMode: () => set((state) => ({ isDarkMode: !state.isDarkMode })),
 
-  items: [
-    // Initial mock data based on HTML
-    { id: '1', productType: '圓管', materialId: 'A1', length: 20, quantity: 30, costPrice: 1200 },
-    { id: '2', productType: '圓管', materialId: 'B2', length: 100, quantity: 15, costPrice: 2200 },
-    { id: '3', productType: '圓管', materialId: 'C3', length: 55, quantity: 120, costPrice: 6200 },
-  ],
+  items: [],
   addItem: (item) => set((state) => ({
     items: [...state.items, { ...item, id: crypto.randomUUID() }]
   })),
@@ -43,6 +39,11 @@ export const useQuoteStore = create<QuoteState>((set) => ({
     items: state.items.filter(item => item.id !== id)
   })),
   clearItems: () => set({ items: [] }),
+  updateItem: (id, updates) => set((state) => ({
+    items: state.items.map(item => 
+      item.id === id ? { ...item, ...updates } : item
+    )
+  })),
 
   settings: {
     mode: 'manual',

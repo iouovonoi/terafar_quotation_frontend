@@ -32,9 +32,24 @@ export interface QuoteItem {
   id: string;
   productType: string;
   materialId: string;
-  length: number;
+  materialName: string;
+  length: number; // 標準長度(mm)
+  width: number; // 寬(mm)
+  thickness: number; // 厚度(mm)
+  weight: number; // 重量(kg)
+  cuttingMethod: 'full' | 'half' | 'actual'; // 全支/半切/切實
+  numberOfCuttingLengths: number; // 裁切幾種長
   quantity: number;
-  costPrice: number;
+  customerId: string; // 客戶編號
+  costPrice: number; // 進價成本（可手動調整）
+  crossSectionArea: number; // 截面積 = 寬 × 厚度
+  unitPrice?: number; // ML模型預測的單價
+  amount?: number; // 金額 = 單價 × 數量（可手動調整）
+  // 手動調整乘數
+  cutMultiplier?: number; // 切工乘數 (default: 1)
+  weightMultiplier?: number; // 重量乘數 (default: 1)
+  customerMultiplier?: number; // 客戶乘數 (default: 1)
+  manualAmount?: number; // 人工計算金額
 }
 
 export interface CalcSettings {

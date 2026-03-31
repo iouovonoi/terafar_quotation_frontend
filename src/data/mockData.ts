@@ -17,11 +17,61 @@ const squareTubeMaterials: Material[] = squaretubesData.map((tube: SquareTube) =
 }));
 
 export const mockMaterials: Material[] = [
-  { id: 'A1', type: '圓管', name: 'A1', unitPrice: 2.0 }, // 每 mm 2元
-  { id: 'B2', type: '圓管', name: 'B2', unitPrice: 1.466 }, // 100mm * 15 = 1500mm, 2200 / 1500 = 1.466
-  { id: 'C3', type: '圓管', name: 'C3', unitPrice: 0.939 }, // 55mm * 120 = 6600mm, 6200 / 6600 = 0.939
-  { id: 'D4', type: '圓鐵', name: 'D4', unitPrice: 3.5 },
-  { id: 'E5', type: '四角鐵', name: 'E5', unitPrice: 4.2 },
+  { 
+    id: 'A1', 
+    type: '圓管', 
+    name: 'A1', 
+    unitPrice: 2.0,
+    costPrice: 50,
+    length: 6000,
+    width: 50,
+    thickness: 2,
+    weight: 4.5
+  },
+  { 
+    id: 'B2', 
+    type: '圓管', 
+    name: 'B2', 
+    unitPrice: 1.466,
+    costPrice: 60,
+    length: 6000,
+    width: 60,
+    thickness: 2.5,
+    weight: 6.2
+  },
+  { 
+    id: 'C3', 
+    type: '圓管', 
+    name: 'C3', 
+    unitPrice: 0.939,
+    costPrice: 55,
+    length: 6000,
+    width: 45,
+    thickness: 2,
+    weight: 4.0
+  },
+  { 
+    id: 'D4', 
+    type: '圓鐵', 
+    name: 'D4', 
+    unitPrice: 3.5,
+    costPrice: 45,
+    length: 6000,
+    width: 30,
+    thickness: 30,
+    weight: 3.8
+  },
+  { 
+    id: 'E5', 
+    type: '四角鐵', 
+    name: 'E5', 
+    unitPrice: 4.2,
+    costPrice: 55,
+    length: 6000,
+    width: 40,
+    thickness: 40,
+    weight: 5.2
+  },
   ...squareTubeMaterials,
 ];
 
