@@ -72,43 +72,40 @@ export const QuoteTable: React.FC = () => {
       const amount = unitPrice * item.quantity;
 
       updateItem(item.id, { unitPrice, amount });
-
-      // 自動滑出面板讓使用者調整
-      openPanel({ ...item, unitPrice, amount });
     } catch (error) {
       console.error('Failed to fetch unit price:', error);
+      updateItem(item.id, { unitPrice: 0, amount: 0 });
     } finally {
       setLoadingItemId(null);
     }
   }, [updateItem]);
 
-  // 處理面板提交（含額外加減項）
+  // 處理面板提交（含額外加減項）→ 結果寫入單價，金額 = 單價 × 數量
   const handlePanelSubmit = (itemId: string, cutMultiplier: number, weightMultiplier: number, customerMultiplier: number, extraCharges: ExtraCharge[]) => {
     const item = items.find(i => i.id === itemId);
     if (!item) return;
 
-    const baseAmount = item.costPrice * cutMultiplier * weightMultiplier * customerMultiplier * item.quantity;
+    const baseUnitPrice = item.costPrice * cutMultiplier * weightMultiplier * customerMultiplier;
     const extraTotal = extraCharges.reduce((sum, ec) => sum + ec.amount, 0);
-    const manualAmount = baseAmount + extraTotal;
+    const newUnitPrice = baseUnitPrice + extraTotal;
 
     updateItem(itemId, {
       cutMultiplier,
       weightMultiplier,
       customerMultiplier,
       extraCharges,
-      manualAmount,
-      amount: manualAmount,
+      manualAmount: newUnitPrice,
+      unitPrice: newUnitPrice,
+      amount: newUnitPrice * item.quantity,
     });
 
     closePanel();
   };
 
-  // 還原為原始金額（單價 × 數量）
+  // 還原為原始單價（重新呼叫 API 取得）
   const handleResetAmount = (itemId: string) => {
     const item = items.find(i => i.id === itemId);
-    if (!item || !item.unitPrice) return;
-
-    const originalAmount = item.unitPrice * item.quantity;
+    if (!item) return;
 
     updateItem(itemId, {
       cutMultiplier: undefined,
@@ -116,11 +113,25 @@ export const QuoteTable: React.FC = () => {
       customerMultiplier: undefined,
       extraCharges: undefined,
       manualAmount: undefined,
-      amount: originalAmount,
     });
+
+    // 重新呼叫 API 取得預測單價
+    fetchUnitPrice(item);
 
     closePanel();
   };
+
+  // 新增項目時自動呼叫 API 預測單價
+  const fetchedIdsRef = useRef<Set<string>>(new Set());
+  useEffect(() => {
+    items.forEach((item) => {
+      // 尚未取得單價、不在載入中、且尚未嘗試過的項目
+      if (!item.unitPrice && loadingItemId !== item.id && !fetchedIdsRef.current.has(item.id)) {
+        fetchedIdsRef.current.add(item.id);
+        fetchUnitPrice(item);
+      }
+    });
+  }, [items, loadingItemId, fetchUnitPrice]);
 
   // 取得面板對應的 item
   const panelItem = slidePanel ? items.find(i => i.id === slidePanel.itemId) : null;
@@ -186,32 +197,41 @@ export const QuoteTable: React.FC = () => {
                       ${item.costPrice.toFixed(2)}
                     </td>
                     <td className="px-3 py-3 text-right">
-                      {loadingItemId === item.id ? (
-                        <span className="text-text-muted text-sm">加載中...</span>
-                      ) : item.unitPrice ? (
-                        <span className="font-semibold text-text-main dark:text-slate-200">
-                          ${item.unitPrice.toFixed(2)}
-                        </span>
-                      ) : (
+                      <div className="inline-flex items-center gap-1">
+                        {loadingItemId === item.id ? (
+                          <span className="text-text-muted text-sm">加載中...</span>
+                        ) : (
+                          <input
+                            type="number"
+                            value={item.unitPrice || ''}
+                            onChange={(e) => {
+                              const newUnitPrice = e.target.value === '' ? 0 : Number(e.target.value);
+                              updateItem(item.id, { unitPrice: newUnitPrice, amount: newUnitPrice * item.quantity });
+                            }}
+                            placeholder="輸入單價"
+                            className="w-24 bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-sm text-right font-semibold text-text-main dark:text-slate-200 px-0 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
+                          />
+                        )}
                         <button
                           onClick={() => fetchUnitPrice(item)}
-                          className="text-primary hover:text-primary-dark dark:text-indigo-400 dark:hover:text-indigo-300 text-sm font-semibold"
+                          className="shrink-0 p-1 text-text-muted hover:text-green-600 dark:hover:text-green-400 transition-colors rounded"
+                          title="重新取得預測單價"
                         >
-                          計算單價
+                          <RotateCcw size={14} />
                         </button>
-                      )}
+                        <button
+                          onClick={() => openPanel(item)}
+                          className="shrink-0 p-1 text-text-muted hover:text-primary dark:hover:text-indigo-400 transition-colors rounded"
+                          title="開啟計算機調整"
+                        >
+                          <Calculator size={15} />
+                        </button>
+                      </div>
                     </td>
                     <td className="px-3 py-3 text-right">
-                      <button
-                        onClick={() => openPanel(item)}
-                        className="inline-flex items-center gap-1 group cursor-pointer"
-                        title="點擊調整金額"
-                      >
-                        <span className={`font-semibold ${isAdjusted ? 'text-amber-600 dark:text-amber-400' : 'text-text-main dark:text-slate-200'}`}>
-                          {item.amount ? `$${item.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
-                        </span>
-                        <Calculator size={16} className="text-text-muted opacity-0 group-hover:opacity-100 transition-opacity" />
-                      </button>
+                      <span className={`font-semibold ${isAdjusted ? 'text-amber-600 dark:text-amber-400' : 'text-text-main dark:text-slate-200'}`}>
+                        {item.amount ? `$${item.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
+                      </span>
                       {isAdjusted && (
                         <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">已調整</p>
                       )}
@@ -342,10 +362,10 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
 
   if (!item) return null;
 
-  const baseAmount = item.costPrice * cutMultiplier * weightMultiplier * customerMultiplier * item.quantity;
+  const baseUnitPrice = item.costPrice * cutMultiplier * weightMultiplier * customerMultiplier;
   const extraTotal = extraCharges.reduce((sum, ec) => sum + (ec.amount || 0), 0);
-  const previewAmount = baseAmount + extraTotal;
-  const originalAmount = item.unitPrice ? item.unitPrice * item.quantity : 0;
+  const previewUnitPrice = baseUnitPrice + extraTotal;
+  const previewAmount = previewUnitPrice * item.quantity;
   const isAdjusted = item.manualAmount !== undefined && item.manualAmount !== null;
 
   return (
@@ -354,7 +374,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
       <div className="flex items-center justify-between px-5 py-4 border-b border-border-light dark:border-border-dark shrink-0">
         <div className="flex items-center gap-2">
           <Calculator size={20} className="text-primary dark:text-indigo-400" />
-          <h4 className="text-lg font-bold text-text-main dark:text-slate-200">調整金額</h4>
+          <h4 className="text-lg font-bold text-text-main dark:text-slate-200">調整單價</h4>
         </div>
         <button
           onClick={onClose}
@@ -421,7 +441,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
 
           {/* 公式 */}
           <p className="text-xs text-text-muted bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2">
-            ${item.costPrice.toFixed(2)} × {cutMultiplier} × {weightMultiplier} × {customerMultiplier} × {item.quantity} = <span className="font-semibold text-text-main dark:text-slate-200">${baseAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+            ${item.costPrice.toFixed(2)} × {cutMultiplier} × {weightMultiplier} × {customerMultiplier} = <span className="font-semibold text-text-main dark:text-slate-200">${baseUnitPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </p>
         </div>
 
@@ -486,29 +506,27 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
           )}
         </div>
 
-        {/* 預覽金額 */}
+        {/* 預覽單價 */}
         <div className="bg-primary-light dark:bg-primary/10 rounded-lg p-4 border border-primary/20">
-          <p className="text-xs font-semibold text-text-muted mb-1">調整後金額</p>
+          <p className="text-xs font-semibold text-text-muted mb-1">調整後單價</p>
           <p className="text-2xl font-black text-primary dark:text-indigo-400">
-            ${previewAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
+            ${previewUnitPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          {originalAmount > 0 && (
-            <p className="text-xs text-text-muted mt-1.5">
-              原始金額：${originalAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
-            </p>
-          )}
+          <p className="text-xs text-text-muted mt-1.5">
+            金額：${previewUnitPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} × {item.quantity} = <span className="font-semibold">${previewAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
+          </p>
         </div>
       </div>
 
       {/* 底部按鈕 */}
       <div className="px-5 py-4 border-t border-border-light dark:border-border-dark space-y-2.5 shrink-0">
-        {isAdjusted && originalAmount > 0 && (
+        {isAdjusted && (
           <button
             onClick={onReset}
             className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-amber-300 dark:border-amber-600 rounded-lg text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-sm font-semibold"
           >
             <RotateCcw size={14} />
-            還原原始金額
+            還原預測單價
           </button>
         )}
         <div className="flex gap-3">
