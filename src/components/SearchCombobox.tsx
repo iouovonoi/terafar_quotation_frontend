@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from 'react';
+import React, { useState, useRef, useEffect, useImperativeHandle, forwardRef } from 'react';
 import { ChevronDown, X } from 'lucide-react';
 
 interface Option {
@@ -13,20 +13,30 @@ interface SearchComboboxProps {
   placeholder?: string;
   label?: string;
   inputClass?: string;
+  onKeyDown?: (e: React.KeyboardEvent) => void;
 }
 
-export const SearchCombobox: React.FC<SearchComboboxProps> = ({
+export interface SearchComboboxRef {
+  focus: () => void;
+}
+
+export const SearchCombobox = forwardRef<SearchComboboxRef, SearchComboboxProps>(({
   options,
   value,
   onChange,
   placeholder = '請選擇或搜尋...',
   label,
   inputClass = '',
-}) => {
+  onKeyDown,
+}, ref) => {
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState('');
   const containerRef = useRef<HTMLDivElement>(null);
   const inputRef = useRef<HTMLInputElement>(null);
+
+  useImperativeHandle(ref, () => ({
+    focus: () => inputRef.current?.focus(),
+  }));
 
   // 模糊搜尋過濾
   const filteredOptions = options.filter(
@@ -82,6 +92,7 @@ export const SearchCombobox: React.FC<SearchComboboxProps> = ({
             setIsOpen(true);
             setSearchTerm('');
           }}
+          onKeyDown={onKeyDown}
           placeholder={placeholder}
           className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-sm h-10 px-3 focus:border-primary focus:ring-primary dark:text-slate-200 pr-10"
         />
@@ -132,4 +143,6 @@ export const SearchCombobox: React.FC<SearchComboboxProps> = ({
       )}
     </div>
   );
-};
+});
+
+SearchCombobox.displayName = 'SearchCombobox';

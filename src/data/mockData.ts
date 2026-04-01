@@ -159,4 +159,4 @@ export const mockMaterials: Material[] = [
   ...squareTubeMaterials,
 ];
 
-export const productTypes = ['方管', '圓管', '圓鐵', '四角鐵'];
+export const productTypes = ['方管'];

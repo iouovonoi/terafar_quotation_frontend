@@ -61,7 +61,8 @@ export const QuoteTable: React.FC = () => {
 
       console.log('Sending payload to ML API:', payload);
 
-      const response = await fetch('https://0e77-220-132-201-204.ngrok-free.app/api/prediction/predict?model=main_no_cutting', {
+      const apiUrl = import.meta.env.VITE_API_URL || 'http://127.0.0.1:1234';
+      const response = await fetch(`${apiUrl}/api/prediction/predict?model=main_no_cutting`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -157,15 +158,15 @@ export const QuoteTable: React.FC = () => {
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
       <div className="px-6 py-5 border-b border-border-light dark:border-border-dark flex justify-between items-center">
-        <h3 className="text-lg font-bold text-text-main dark:text-slate-200">需求明細</h3>
+        <h3 className="text-xl font-bold text-text-main dark:text-slate-200">需求明細</h3>
         <span className="text-sm font-medium px-3 py-1 bg-background-light dark:bg-slate-900 rounded text-text-muted">
           {items.length} 個項目
         </span>
       </div>
 
-      <div>
-        <table className="w-full text-left text-base">
-          <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-[11px] tracking-wider font-bold">
+      <div className="overflow-x-auto">
+        <table className="w-full text-left text-base min-w-[900px]">
+          <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-xs tracking-wider font-bold">
             <tr>
               <th className="px-4 py-3 w-12 text-center">No.</th>
               <th className="px-4 py-3">型號</th>
@@ -233,13 +234,13 @@ export const QuoteTable: React.FC = () => {
                         ) : (
                           <input
                             type="number"
-                            value={item.unitPrice ? item.unitPrice.toFixed(2) : ''}
+                            value={item.unitPrice || ''}
                             onChange={(e) => {
                               const newUnitPrice = e.target.value === '' ? 0 : Number(e.target.value);
                               updateItem(item.id, { unitPrice: newUnitPrice, amount: newUnitPrice * item.quantity });
                             }}
                             placeholder="輸入單價"
-                            className="w-24 bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-sm text-right font-semibold text-text-main dark:text-slate-200 px-0 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
+                            className="w-24 bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-sm text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
                           />
                         )}
                         <button
