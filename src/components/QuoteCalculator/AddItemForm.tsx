@@ -1,6 +1,7 @@
 import React, { useState, useRef, useMemo } from 'react';
 import { useQuoteStore } from '../../store/useQuoteStore';
-import { productTypes, mockMaterials } from '../../data/mockData';
+import { productTypes, mockMaterials, mockCustomers } from '../../data/mockData';
+import { SearchCombobox } from '../SearchCombobox';
 import { PlusCircle, Plus, HelpCircle } from 'lucide-react';
 
 export const AddItemForm: React.FC = () => {
@@ -26,8 +27,7 @@ export const AddItemForm: React.FC = () => {
   // 當產品類型改變時，重置材料ID
   const handleProductTypeChange = (newType: string) => {
     setProductType(newType);
-    const firstMaterial = mockMaterials.find(m => m.type === newType);
-    setMaterialId(firstMaterial?.id || '');
+    setMaterialId('');
   };
 
   // 取得當前選擇的材料
@@ -48,8 +48,8 @@ export const AddItemForm: React.FC = () => {
       setError('請選擇材料');
       return;
     }
-    if (!numberOfCuttingLengths || numberOfCuttingLengths <= 0) {
-      setError('請輸入有效的裁切幾種長度');
+    if (numberOfCuttingLengths === '') {
+      setError('請輸入裁切幾種長度');
       return;
     }
     if (!quantity || quantity <= 0) {
@@ -119,16 +119,13 @@ export const AddItemForm: React.FC = () => {
 
         <div>
           <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">材料ID</label>
-          <select
+          <SearchCombobox
+            options={filteredMaterials.map(m => ({ id: m.id, name: m.name }))}
             value={materialId}
-            onChange={(e) => setMaterialId(e.target.value)}
-            className={inputClass}
-          >
-            <option value="">請選擇...</option>
-            {filteredMaterials.map(m => (
-              <option key={m.id} value={m.id}>{m.name}</option>
-            ))}
-          </select>
+            onChange={setMaterialId}
+            placeholder="搜尋材料ID..."
+            inputClass="w-full"
+          />
         </div>
 
         <div>
@@ -184,12 +181,12 @@ export const AddItemForm: React.FC = () => {
 
         <div>
           <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">客戶編號</label>
-          <input
-            type="text"
+          <SearchCombobox
+            options={mockCustomers.map(c => ({ id: c.id, name: c.name }))}
             value={customerId}
-            onChange={(e) => setCustomerId(e.target.value)}
-            placeholder="例如: 1C16164"
-            className={inputClass}
+            onChange={setCustomerId}
+            placeholder="搜尋客戶..."
+            inputClass="w-full"
           />
         </div>
 

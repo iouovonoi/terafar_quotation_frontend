@@ -22,6 +22,11 @@ export interface Material {
   thickness?: number; // 厚度(mm)
 }
 
+export interface Customer {
+  id: string;
+  name: string;
+}
+
 export type PageType = 'quote' | 'material' | 'customer' | 'history';
 
 export interface ExtraCharge {

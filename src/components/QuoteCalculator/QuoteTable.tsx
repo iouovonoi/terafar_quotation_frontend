@@ -21,6 +21,8 @@ export const QuoteTable: React.FC = () => {
   const [slidePanel, setSlidePanel] = useState<SlidePanel | null>(null);
   const [isPanelVisible, setIsPanelVisible] = useState(false);
   const [loadingItemId, setLoadingItemId] = useState<string | null>(null);
+  const [newlyAddedItemId, setNewlyAddedItemId] = useState<string | null>(null);
+  const previousItemsLengthRef = useRef(0);
 
   // 開啟面板（帶動畫）
   const openPanel = (item: QuoteItem) => {
@@ -59,7 +61,7 @@ export const QuoteTable: React.FC = () => {
 
       console.log('Sending payload to ML API:', payload);
 
-      const response = await fetch('http://127.0.0.1:1234/api/prediction/predict?model=main_no_cutting', {
+      const response = await fetch('https://0e77-220-132-201-204.ngrok-free.app/api/prediction/predict?model=main_no_cutting', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
@@ -123,6 +125,22 @@ export const QuoteTable: React.FC = () => {
 
   // 新增項目時自動呼叫 API 預測單價
   const fetchedIdsRef = useRef<Set<string>>(new Set());
+
+  // 偵測新項目並添加動畫
+  useEffect(() => {
+    if (items.length > previousItemsLengthRef.current) {
+      // 新項目被添加，獲取最後一個項目的 id
+      const lastItemId = items[items.length - 1]?.id;
+      if (lastItemId) {
+        setNewlyAddedItemId(lastItemId);
+        // 3秒後移除動畫
+        const timer = setTimeout(() => setNewlyAddedItemId(null), 3000);
+        return () => clearTimeout(timer);
+      }
+    }
+    previousItemsLengthRef.current = items.length;
+  }, [items]);
+
   useEffect(() => {
     items.forEach((item) => {
       // 尚未取得單價、不在載入中、且尚未嘗試過的項目
@@ -149,6 +167,7 @@ export const QuoteTable: React.FC = () => {
         <table className="w-full text-left text-base">
           <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-[11px] tracking-wider font-bold">
             <tr>
+              <th className="px-4 py-3 w-12 text-center">No.</th>
               <th className="px-4 py-3">型號</th>
               <th className="px-3 py-3 text-center">規格</th>
               <th className="px-3 py-3 text-center">切法</th>
@@ -164,7 +183,7 @@ export const QuoteTable: React.FC = () => {
           <tbody className="divide-y divide-border-light dark:divide-border-dark">
             {items.length === 0 ? (
               <tr>
-                <td colSpan={10} className="px-4 py-12 text-center text-text-muted">
+                <td colSpan={11} className="px-4 py-12 text-center text-text-muted">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <Inbox size={36} className="opacity-50" />
                     <p className="text-base">目前無資料，請從上方新增項目</p>
@@ -172,10 +191,21 @@ export const QuoteTable: React.FC = () => {
                 </td>
               </tr>
             ) : (
-              items.map((item) => {
+              items.map((item, index) => {
                 const isAdjusted = item.manualAmount !== undefined && item.manualAmount !== null;
+                const isNewlyAdded = newlyAddedItemId === item.id;
                 return (
-                  <tr key={item.id} className="hover:bg-background-light/50 dark:hover:bg-slate-700/30 transition-colors">
+                  <tr 
+                    key={item.id} 
+                    className={`transition-all ${
+                      isNewlyAdded 
+                        ? 'animate-pulse bg-yellow-50 dark:bg-yellow-900/20 border-l-4 border-yellow-500' 
+                        : 'hover:bg-background-light/50 dark:hover:bg-slate-700/30'
+                    }`}
+                  >
+                    <td className="px-4 py-3 w-12 text-center font-semibold text-text-muted">
+                      {index + 1}
+                    </td>
                     <td className="px-4 py-3">
                       <p className="font-bold text-text-main dark:text-slate-200">{item.materialId}</p>
                       <p className="text-sm text-text-muted">{item.customerId}</p>
@@ -203,7 +233,7 @@ export const QuoteTable: React.FC = () => {
                         ) : (
                           <input
                             type="number"
-                            value={item.unitPrice || ''}
+                            value={item.unitPrice ? item.unitPrice.toFixed(2) : ''}
                             onChange={(e) => {
                               const newUnitPrice = e.target.value === '' ? 0 : Number(e.target.value);
                               updateItem(item.id, { unitPrice: newUnitPrice, amount: newUnitPrice * item.quantity });
@@ -313,14 +343,6 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
 
   // 所有輸入框的 ref，用於 Enter 跳轉
   const inputRefs = useRef<(HTMLInputElement | null)[]>([]);
-
-  // 初始值變化時同步
-  useEffect(() => {
-    setCutMultiplier(initialValues.cutMultiplier);
-    setWeightMultiplier(initialValues.weightMultiplier);
-    setCustomerMultiplier(initialValues.customerMultiplier);
-    setExtraCharges(item?.extraCharges || []);
-  }, [initialValues.cutMultiplier, initialValues.weightMultiplier, initialValues.customerMultiplier, item?.extraCharges]);
 
   // Enter 鍵跳到下一個輸入框
   const handleKeyDown = (e: React.KeyboardEvent, currentIndex: number) => {
