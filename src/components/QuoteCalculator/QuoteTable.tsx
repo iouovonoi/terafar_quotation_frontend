@@ -71,8 +71,9 @@ export const QuoteTable: React.FC = () => {
       if (!response.ok) throw new Error(`API error: ${response.status}`);
 
       const data = await response.json();
-      const unitPrice = data.predicted_price || data.unitPrice || 0;
-      const amount = unitPrice * item.quantity;
+      const rawPrice = data.predicted_price || data.unitPrice || 0;
+      const unitPrice = Math.round(rawPrice * 100) / 100;
+      const amount = Math.round(unitPrice * item.quantity * 100) / 100;
 
       updateItem(item.id, { unitPrice, amount });
     } catch (error) {
@@ -90,7 +91,15 @@ export const QuoteTable: React.FC = () => {
 
     const baseUnitPrice = item.costPrice * cutMultiplier * weightMultiplier * customerMultiplier;
     const extraTotal = extraCharges.reduce((sum, ec) => sum + ec.amount, 0);
-    const newUnitPrice = baseUnitPrice + extraTotal;
+    const newUnitPrice = Math.round((baseUnitPrice + extraTotal) * 100) / 100;
+
+    // 組合計算過程寫入備註（標示每個乘數名稱）
+    let calcNote = `進價$${item.costPrice.toFixed(2)} × 切工${cutMultiplier} × 重量${weightMultiplier} × 客戶${customerMultiplier} = $${baseUnitPrice.toFixed(2)}`;
+    if (extraCharges.length > 0) {
+      const extraParts = extraCharges.map(ec => `${ec.name} ${ec.amount >= 0 ? '+' : ''}$${Math.abs(ec.amount).toFixed(2)}`).join('、');
+      calcNote += `\n額外：${extraParts}`;
+    }
+    calcNote += `\n→ 最終單價 $${newUnitPrice.toFixed(2)}`;
 
     updateItem(itemId, {
       cutMultiplier,
@@ -99,7 +108,8 @@ export const QuoteTable: React.FC = () => {
       extraCharges,
       manualAmount: newUnitPrice,
       unitPrice: newUnitPrice,
-      amount: newUnitPrice * item.quantity,
+      amount: Math.round(newUnitPrice * item.quantity * 100) / 100,
+      note: calcNote,
     });
 
     closePanel();
@@ -116,6 +126,7 @@ export const QuoteTable: React.FC = () => {
       customerMultiplier: undefined,
       extraCharges: undefined,
       manualAmount: undefined,
+      note: '',
     });
 
     // 重新呼叫 API 取得預測單價
@@ -232,14 +243,27 @@ export const QuoteTable: React.FC = () => {
                         {loadingItemId === item.id ? (
                           <span className="text-text-muted text-[15px]">加載中...</span>
                         ) : (
-                          <span className="text-[15px] text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1">
-                            {item.unitPrice ? `$${item.unitPrice.toFixed(2)}` : '-'}
-                          </span>
+                          <UnitPriceInput
+                            value={item.unitPrice || 0}
+                            onChange={(val) => {
+                              updateItem(item.id, { unitPrice: val, amount: Math.round(val * item.quantity * 100) / 100 });
+                            }}
+                          />
                         )}
                         <button
-                          onClick={() => fetchUnitPrice(item)}
+                          onClick={() => {
+                            updateItem(item.id, {
+                              cutMultiplier: undefined,
+                              weightMultiplier: undefined,
+                              customerMultiplier: undefined,
+                              extraCharges: undefined,
+                              manualAmount: undefined,
+                              note: '',
+                            });
+                            fetchUnitPrice(item);
+                          }}
                           className="shrink-0 p-1 text-text-muted hover:text-green-600 dark:hover:text-green-400 transition-colors rounded"
-                          title="重新取得預測單價"
+                          title="重新取得預測單價（同時清除調整）"
                         >
                           <RotateCcw size={14} />
                         </button>
@@ -261,12 +285,9 @@ export const QuoteTable: React.FC = () => {
                       )}
                     </td>
                     <td className="px-3 py-3">
-                      <input
-                        type="text"
-                        value={item.note || ''}
-                        onChange={(e) => updateItem(item.id, { note: e.target.value })}
-                        placeholder="備註"
-                        className="w-full min-w-[80px] bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-[15px] text-text-main dark:text-slate-300 px-0 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
+                      <NoteCell
+                        note={item.note || ''}
+                        onChange={(val) => updateItem(item.id, { note: val })}
                       />
                     </td>
                     <td className="px-3 py-3 text-center">
@@ -313,6 +334,123 @@ export const QuoteTable: React.FC = () => {
         </div>
       )}
     </div>
+  );
+};
+
+// ===== 單價輸入組件（顯示小數後兩位）=====
+interface UnitPriceInputProps {
+  value: number;
+  onChange: (value: number) => void;
+}
+
+const UnitPriceInput: React.FC<UnitPriceInputProps> = ({ value, onChange }) => {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+
+  if (editing) {
+    return (
+      <input
+        type="number"
+        step="0.01"
+        autoFocus
+        value={editValue}
+        onChange={(e) => setEditValue(e.target.value)}
+        onBlur={() => {
+          const num = editValue === '' ? 0 : Math.round(Number(editValue) * 100) / 100;
+          onChange(num);
+          setEditing(false);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            const num = editValue === '' ? 0 : Math.round(Number(editValue) * 100) / 100;
+            onChange(num);
+            setEditing(false);
+          }
+        }}
+        className="w-24 bg-transparent border-0 border-b border-primary dark:border-indigo-400 text-[15px] text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1 focus:ring-0 transition-colors"
+      />
+    );
+  }
+
+  return (
+    <button
+      onClick={() => { setEditValue(value ? String(value) : ''); setEditing(true); }}
+      className="w-24 text-right font-semibold text-text-main dark:text-slate-200 text-[15px] px-1 py-1 border-b border-transparent hover:border-border-light dark:hover:border-border-dark transition-colors cursor-text"
+    >
+      {value ? `$${value.toFixed(2)}` : '-'}
+    </button>
+  );
+};
+
+// ===== 備註彈窗組件 =====
+interface NoteCellProps {
+  note: string;
+  onChange: (value: string) => void;
+}
+
+const NoteCell: React.FC<NoteCellProps> = ({ note, onChange }) => {
+  const [showModal, setShowModal] = useState(false);
+  const hasContent = note.trim().length > 0;
+
+  return (
+    <>
+      <div className="min-w-[80px]">
+        <button
+          onClick={() => setShowModal(true)}
+          className={`w-full text-left text-[15px] px-0 py-1 truncate max-w-[120px] transition-colors ${
+            hasContent
+              ? 'text-text-main dark:text-slate-300 hover:text-primary dark:hover:text-indigo-400'
+              : 'text-text-muted/40'
+          }`}
+          title={hasContent ? '點擊查看備註' : '點擊新增備註'}
+        >
+          {hasContent ? (note.includes('\n') ? note.split('\n')[0] + '…' : note) : '備註'}
+        </button>
+      </div>
+
+      {showModal && (
+        <>
+          {/* 遮罩 */}
+          <div
+            className="fixed inset-0 bg-black/30 dark:bg-black/50 z-50 transition-opacity"
+            onClick={() => setShowModal(false)}
+          />
+          {/* 置中彈窗 */}
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4 pointer-events-none">
+            <div className="pointer-events-auto w-full max-w-md bg-white dark:bg-slate-800 rounded-2xl shadow-2xl border border-border-light dark:border-border-dark overflow-hidden">
+              {/* 標題列 */}
+              <div className="flex items-center justify-between px-5 py-3 border-b border-border-light dark:border-border-dark bg-background-light/50 dark:bg-slate-900/30">
+                <span className="text-base font-bold text-text-main dark:text-slate-200">📝 備註內容</span>
+                <button
+                  onClick={() => setShowModal(false)}
+                  className="p-1.5 rounded-lg text-text-muted hover:text-text-main dark:hover:text-white hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors"
+                >
+                  <X size={18} />
+                </button>
+              </div>
+              {/* 編輯區 */}
+              <div className="p-4">
+                <textarea
+                  value={note}
+                  onChange={(e) => onChange(e.target.value)}
+                  rows={4}
+                  placeholder="輸入備註..."
+                  className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-[15px] text-text-main dark:text-slate-300 px-3 py-2.5 focus:border-primary focus:ring-primary resize-none"
+                />
+                <div className="flex justify-end mt-3">
+                  <button
+                    onClick={() => setShowModal(false)}
+                    className="px-4 py-2 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold text-[15px] transition-colors"
+                  >
+                    確定
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </>
+      )}
+    </>
   );
 };
 
