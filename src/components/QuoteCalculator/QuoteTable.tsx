@@ -232,16 +232,9 @@ export const QuoteTable: React.FC = () => {
                         {loadingItemId === item.id ? (
                           <span className="text-text-muted text-[15px]">加載中...</span>
                         ) : (
-                          <input
-                            type="number"
-                            value={item.unitPrice || ''}
-                            onChange={(e) => {
-                              const newUnitPrice = e.target.value === '' ? 0 : Number(e.target.value);
-                              updateItem(item.id, { unitPrice: newUnitPrice, amount: newUnitPrice * item.quantity });
-                            }}
-                            placeholder="輸入單價"
-                            className="w-24 bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-[15px] text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
-                          />
+                          <span className="text-[15px] text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1">
+                            {item.unitPrice ? `$${item.unitPrice.toFixed(2)}` : '-'}
+                          </span>
                         )}
                         <button
                           onClick={() => fetchUnitPrice(item)}
