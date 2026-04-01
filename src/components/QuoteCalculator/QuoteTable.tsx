@@ -159,14 +159,14 @@ export const QuoteTable: React.FC = () => {
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
       <div className="px-6 py-5 border-b border-border-light dark:border-border-dark flex justify-between items-center">
         <h3 className="text-xl font-bold text-text-main dark:text-slate-200">需求明細</h3>
-        <span className="text-sm font-medium px-3 py-1 bg-background-light dark:bg-slate-900 rounded text-text-muted">
+        <span className="text-[15px] font-medium px-3 py-1 bg-background-light dark:bg-slate-900 rounded text-text-muted">
           {items.length} 個項目
         </span>
       </div>
 
       <div className="overflow-x-auto">
         <table className="w-full text-left text-base min-w-[900px]">
-          <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-xs tracking-wider font-bold">
+          <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-[15px] tracking-wider font-bold">
             <tr>
               <th className="px-4 py-3 w-12 text-center">No.</th>
               <th className="px-4 py-3">型號</th>
@@ -209,28 +209,28 @@ export const QuoteTable: React.FC = () => {
                     </td>
                     <td className="px-4 py-3">
                       <p className="font-bold text-text-main dark:text-slate-200">{item.materialId}</p>
-                      <p className="text-sm text-text-muted">{item.customerId}</p>
+                      <p className="text-[15px] text-text-muted">{item.customerId}</p>
                     </td>
-                    <td className="px-3 py-3 text-center text-sm text-text-main dark:text-slate-300">
+                    <td className="px-3 py-3 text-center text-[15px] text-text-main dark:text-slate-300">
                       <span>{item.length}×{item.width}×{item.thickness}</span>
                       <span className="text-text-muted dark:text-slate-400 ml-0.5">{item.weight}kg</span>
                     </td>
-                    <td className="px-3 py-3 text-center text-sm text-text-main dark:text-slate-300">
+                    <td className="px-3 py-3 text-center text-[15px] text-text-main dark:text-slate-300">
                       {cuttingMethodLabels[item.cuttingMethod]}
                     </td>
-                    <td className="px-3 py-3 text-center text-sm text-text-main dark:text-slate-300">
+                    <td className="px-3 py-3 text-center text-[15px] text-text-main dark:text-slate-300">
                       {item.numberOfCuttingLengths}
                     </td>
-                    <td className="px-3 py-3 text-center text-sm text-text-main dark:text-slate-300">
+                    <td className="px-3 py-3 text-center text-[15px] text-text-main dark:text-slate-300">
                       {item.quantity}
                     </td>
-                    <td className="px-3 py-3 text-right text-sm text-text-main dark:text-slate-300">
+                    <td className="px-3 py-3 text-right text-[15px] text-text-main dark:text-slate-300">
                       ${item.costPrice.toFixed(2)}
                     </td>
                     <td className="px-3 py-3 text-right">
                       <div className="inline-flex items-center gap-1">
                         {loadingItemId === item.id ? (
-                          <span className="text-text-muted text-sm">加載中...</span>
+                          <span className="text-text-muted text-[15px]">加載中...</span>
                         ) : (
                           <input
                             type="number"
@@ -240,7 +240,7 @@ export const QuoteTable: React.FC = () => {
                               updateItem(item.id, { unitPrice: newUnitPrice, amount: newUnitPrice * item.quantity });
                             }}
                             placeholder="輸入單價"
-                            className="w-24 bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-sm text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
+                            className="w-24 bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-[15px] text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
                           />
                         )}
                         <button
@@ -264,7 +264,7 @@ export const QuoteTable: React.FC = () => {
                         {item.amount ? `$${item.amount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}` : '-'}
                       </span>
                       {isAdjusted && (
-                        <p className="text-xs text-amber-600 dark:text-amber-400 mt-0.5">已調整</p>
+                        <p className="text-[15px] text-amber-600 dark:text-amber-400 mt-0.5">已調整</p>
                       )}
                     </td>
                     <td className="px-3 py-3">
@@ -273,7 +273,7 @@ export const QuoteTable: React.FC = () => {
                         value={item.note || ''}
                         onChange={(e) => updateItem(item.id, { note: e.target.value })}
                         placeholder="備註"
-                        className="w-full min-w-[80px] bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-sm text-text-main dark:text-slate-300 px-0 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
+                        className="w-full min-w-[80px] bg-transparent border-0 border-b border-transparent hover:border-border-light focus:border-primary dark:hover:border-border-dark dark:focus:border-indigo-400 text-[15px] text-text-main dark:text-slate-300 px-0 py-1 focus:ring-0 placeholder:text-text-muted/40 transition-colors"
                       />
                     </td>
                     <td className="px-3 py-3 text-center">
@@ -410,7 +410,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
       {/* 項目資訊 */}
       <div className="px-5 py-3 bg-background-light/50 dark:bg-slate-900/30 border-b border-border-light dark:border-border-dark shrink-0">
         <p className="font-bold text-text-main dark:text-slate-200">{item.materialId}</p>
-        <p className="text-sm text-text-muted mt-0.5">
+        <p className="text-[15px] text-text-muted mt-0.5">
           {item.length}×{item.width}×{item.thickness}mm ・ {item.quantity} 個 ・ 客戶 {item.customerId}
         </p>
       </div>
@@ -419,10 +419,10 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
       <div className="flex-1 overflow-y-auto px-5 py-5 space-y-4">
         {/* 乘數輸入 */}
         <div className="space-y-3">
-          <p className="text-xs font-bold text-text-muted uppercase tracking-wider">乘數調整</p>
+          <p className="text-[15px] font-bold text-text-muted uppercase tracking-wider">乘數調整</p>
           <div className="grid grid-cols-3 gap-3">
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1">切工</label>
+              <label className="block text-[15px] font-semibold text-text-muted mb-1">切工</label>
               <input
                 ref={setRef(0)}
                 type="number"
@@ -431,11 +431,11 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
                 value={cutMultiplier}
                 onChange={(e) => setCutMultiplier(Number(e.target.value) || 1)}
                 onKeyDown={(e) => handleKeyDown(e, 0)}
-                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2.5 text-sm text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
+                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2.5 text-[15px] text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1">重量</label>
+              <label className="block text-[15px] font-semibold text-text-muted mb-1">重量</label>
               <input
                 ref={setRef(1)}
                 type="number"
@@ -444,11 +444,11 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
                 value={weightMultiplier}
                 onChange={(e) => setWeightMultiplier(Number(e.target.value) || 1)}
                 onKeyDown={(e) => handleKeyDown(e, 1)}
-                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2.5 text-sm text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
+                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2.5 text-[15px] text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
               />
             </div>
             <div>
-              <label className="block text-xs font-semibold text-text-muted mb-1">客戶</label>
+              <label className="block text-[15px] font-semibold text-text-muted mb-1">客戶</label>
               <input
                 ref={setRef(2)}
                 type="number"
@@ -457,13 +457,13 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
                 value={customerMultiplier}
                 onChange={(e) => setCustomerMultiplier(Number(e.target.value) || 1)}
                 onKeyDown={(e) => handleKeyDown(e, 2)}
-                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2.5 text-sm text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
+                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2.5 text-[15px] text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
               />
             </div>
           </div>
 
           {/* 公式 */}
-          <p className="text-xs text-text-muted bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2">
+          <p className="text-[15px] text-text-muted bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2">
             ${item.costPrice.toFixed(2)} × {cutMultiplier} × {weightMultiplier} × {customerMultiplier} = <span className="font-semibold text-text-main dark:text-slate-200">${baseUnitPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </p>
         </div>
@@ -471,10 +471,10 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
         {/* 額外加減項目 */}
         <div className="space-y-3">
           <div className="flex items-center justify-between">
-            <p className="text-xs font-bold text-text-muted uppercase tracking-wider">額外加減項</p>
+            <p className="text-[15px] font-bold text-text-muted uppercase tracking-wider">額外加減項</p>
             <button
               onClick={addExtraCharge}
-              className="text-xs text-primary hover:text-primary-dark dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold flex items-center gap-1"
+              className="text-[15px] text-primary hover:text-primary-dark dark:text-indigo-400 dark:hover:text-indigo-300 font-semibold flex items-center gap-1"
             >
               <Plus size={14} />
               新增
@@ -482,7 +482,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
           </div>
 
           {extraCharges.length === 0 ? (
-            <p className="text-xs text-text-muted/60 text-center py-2">尚無額外項目，可新增運費、折扣等</p>
+            <p className="text-[15px] text-text-muted/60 text-center py-2">尚無額外項目，可新增運費、折扣等</p>
           ) : (
             <div className="space-y-2">
               {extraCharges.map((ec, idx) => {
@@ -497,7 +497,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
                       onChange={(e) => updateExtraCharge(ec.id, 'name', e.target.value)}
                       onKeyDown={(e) => handleKeyDown(e, nameRefIdx)}
                       placeholder="項目名稱"
-                      className="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2 text-sm text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
+                      className="flex-1 min-w-0 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2 text-[15px] text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
                     />
                     <input
                       ref={setRef(amountRefIdx)}
@@ -506,7 +506,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
                       onChange={(e) => updateExtraCharge(ec.id, 'amount', Number(e.target.value) || 0)}
                       onKeyDown={(e) => handleKeyDown(e, amountRefIdx)}
                       placeholder="±金額"
-                      className="w-24 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2 text-sm text-right text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
+                      className="w-24 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg px-3 py-2 text-[15px] text-right text-text-main dark:text-slate-200 focus:border-primary focus:ring-primary"
                     />
                     <button
                       onClick={() => removeExtraCharge(ec.id)}
@@ -521,7 +521,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
           )}
 
           {extraTotal !== 0 && (
-            <p className="text-xs text-text-muted bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2">
+            <p className="text-[15px] text-text-muted bg-slate-50 dark:bg-slate-900/50 rounded-lg px-3 py-2">
               額外合計：<span className={`font-semibold ${extraTotal >= 0 ? 'text-green-600 dark:text-green-400' : 'text-red-600 dark:text-red-400'}`}>
                 {extraTotal >= 0 ? '+' : ''}${extraTotal.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
               </span>
@@ -531,11 +531,11 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
 
         {/* 預覽單價 */}
         <div className="bg-primary-light dark:bg-primary/10 rounded-lg p-4 border border-primary/20">
-          <p className="text-xs font-semibold text-text-muted mb-1">調整後單價</p>
+          <p className="text-[15px] font-semibold text-text-muted mb-1">調整後單價</p>
           <p className="text-2xl font-black text-primary dark:text-indigo-400">
             ${previewUnitPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}
           </p>
-          <p className="text-xs text-text-muted mt-1.5">
+          <p className="text-[15px] text-text-muted mt-1.5">
             金額：${previewUnitPrice.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })} × {item.quantity} = <span className="font-semibold">${previewAmount.toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 })}</span>
           </p>
         </div>
@@ -546,7 +546,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
         {isAdjusted && (
           <button
             onClick={onReset}
-            className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-amber-300 dark:border-amber-600 rounded-lg text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-sm font-semibold"
+            className="w-full flex items-center justify-center gap-2 px-4 py-2 border border-amber-300 dark:border-amber-600 rounded-lg text-amber-700 dark:text-amber-400 hover:bg-amber-50 dark:hover:bg-amber-900/20 transition-colors text-[15px] font-semibold"
           >
             <RotateCcw size={14} />
             還原預測單價
@@ -555,13 +555,13 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
         <div className="flex gap-3">
           <button
             onClick={onClose}
-            className="flex-1 px-4 py-2.5 border border-border-light dark:border-border-dark rounded-lg text-text-main dark:text-slate-200 hover:bg-background-light dark:hover:bg-slate-700 transition-colors font-medium text-sm"
+            className="flex-1 px-4 py-2.5 border border-border-light dark:border-border-dark rounded-lg text-text-main dark:text-slate-200 hover:bg-background-light dark:hover:bg-slate-700 transition-colors font-medium text-[15px]"
           >
             取消
           </button>
           <button
             onClick={() => onSubmit(cutMultiplier, weightMultiplier, customerMultiplier, extraCharges)}
-            className="flex-1 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors text-sm"
+            className="flex-1 px-4 py-2.5 bg-primary hover:bg-primary-dark text-white rounded-lg font-semibold transition-colors text-[15px]"
           >
             確認調整
           </button>

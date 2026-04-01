@@ -29,7 +29,7 @@ export const Header: React.FC = () => {
         </button>
         <div className="text-right">
           <p className="text-base font-bold text-text-main dark:text-slate-200">{formattedDate}</p>
-          <p className="text-sm text-text-muted">{formattedTime}</p>
+          <p className="text-[15px] text-text-muted">{formattedTime}</p>
         </div>
       </div>
     </header>

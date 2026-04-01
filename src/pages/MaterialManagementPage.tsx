@@ -123,7 +123,7 @@ export const MaterialManagementPage: React.FC = () => {
             <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark overflow-hidden">
               <div className="overflow-x-auto">
                 <table className="w-full text-left text-base">
-                  <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-xs tracking-wider font-bold">
+                  <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-[15px] tracking-wider font-bold">
                     <tr>
                       {isSquareTube ? (
                         <>
@@ -198,7 +198,7 @@ export const MaterialManagementPage: React.FC = () => {
                             <td className="px-6 py-4">
                               <div>
                                 <p className="font-bold text-text-main dark:text-slate-200">{material.name}</p>
-                                <p className="text-sm text-text-muted dark:text-slate-400">{material.id}</p>
+                                <p className="text-[15px] text-text-muted dark:text-slate-400">{material.id}</p>
                               </div>
                             </td>
                             <td className="px-6 py-4 text-right text-text-main dark:text-slate-300">
@@ -232,11 +232,11 @@ export const MaterialManagementPage: React.FC = () => {
 
               {/* Summary */}
               <div className="px-6 py-4 bg-background-light/30 dark:bg-slate-900/30 border-t border-border-light dark:border-border-dark flex items-center justify-between">
-                <p className="text-sm font-semibold text-text-muted dark:text-slate-400">
+                <p className="text-[15px] font-semibold text-text-muted dark:text-slate-400">
                   總計：<span className="text-text-main dark:text-slate-200">{displayMaterials.length}</span> 個{currentType}型號
                 </p>
                 {displayMaterials.length > 0 && isSquareTube && (
-                  <p className="text-sm font-semibold text-text-muted dark:text-slate-400">
+                  <p className="text-[15px] font-semibold text-text-muted dark:text-slate-400">
                     平均進價：
                     <span className="text-primary dark:text-indigo-400">
                       ${(displayMaterials.reduce((sum, m) => sum + (m.buyInPrice || 0), 0) / displayMaterials.length).toFixed(2)}

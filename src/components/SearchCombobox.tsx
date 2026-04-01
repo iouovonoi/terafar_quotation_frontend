@@ -74,7 +74,7 @@ export const SearchCombobox = forwardRef<SearchComboboxRef, SearchComboboxProps>
   return (
     <div ref={containerRef} className="relative w-full">
       {label && (
-        <label className="block text-xs font-semibold text-text-muted uppercase mb-1.5">
+        <label className="block text-[15px] font-semibold text-text-muted uppercase mb-1.5">
           {label}
         </label>
       )}
@@ -94,7 +94,7 @@ export const SearchCombobox = forwardRef<SearchComboboxRef, SearchComboboxProps>
           }}
           onKeyDown={onKeyDown}
           placeholder={placeholder}
-          className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-sm h-10 px-3 focus:border-primary focus:ring-primary dark:text-slate-200 pr-10"
+          className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-[15px] h-10 px-3 focus:border-primary focus:ring-primary dark:text-slate-200 pr-10"
         />
 
         <div className="absolute right-2 top-1/2 -translate-y-1/2 flex items-center gap-1">
@@ -119,7 +119,7 @@ export const SearchCombobox = forwardRef<SearchComboboxRef, SearchComboboxProps>
       {isOpen && (
         <div className="absolute top-full left-0 right-0 mt-1 bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg shadow-lg z-50 max-h-64 overflow-y-auto">
           {filteredOptions.length === 0 ? (
-            <div className="px-3 py-2 text-sm text-text-muted">
+            <div className="px-3 py-2 text-[15px] text-text-muted">
               {searchTerm ? '無搜尋結果' : '無選項'}
             </div>
           ) : (
@@ -127,7 +127,7 @@ export const SearchCombobox = forwardRef<SearchComboboxRef, SearchComboboxProps>
               <button
                 key={opt.id}
                 onClick={() => handleSelect(opt.id)}
-                className={`w-full text-left px-3 py-2 text-sm transition-colors hover:bg-background-light dark:hover:bg-slate-800 ${
+                className={`w-full text-left px-3 py-2 text-[15px] transition-colors hover:bg-background-light dark:hover:bg-slate-800 ${
                   value === opt.id
                     ? 'bg-primary/10 dark:bg-indigo-500/20 text-primary dark:text-indigo-400 font-semibold'
                     : 'text-text-main dark:text-slate-300'
@@ -135,7 +135,7 @@ export const SearchCombobox = forwardRef<SearchComboboxRef, SearchComboboxProps>
                 type="button"
               >
                 <div className="font-semibold">{opt.id}</div>
-                <div className="text-xs text-text-muted dark:text-slate-400">{opt.name}</div>
+                <div className="text-[15px] text-text-muted dark:text-slate-400">{opt.name}</div>
               </button>
             ))
           )}

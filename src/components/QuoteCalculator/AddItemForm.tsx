@@ -117,7 +117,7 @@ export const AddItemForm: React.FC = () => {
     setError(null);
   };
 
-  const inputClass = "w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-sm h-10 px-3 focus:border-primary focus:ring-primary dark:text-slate-200";
+  const inputClass = "w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-[15px] h-10 px-3 focus:border-primary focus:ring-primary dark:text-slate-200";
 
   return (
     <div className="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-border-light dark:border-border-dark p-6">
@@ -126,13 +126,13 @@ export const AddItemForm: React.FC = () => {
           <PlusCircle className="text-primary dark:text-indigo-400" size={22} />
           輸入區
         </h3>
-        {error && <span className="text-sm text-red-500 font-medium">{error}</span>}
+        {error && <span className="text-[15px] text-red-500 font-medium">{error}</span>}
       </div>
 
       {/* First Row */}
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-5">
         <div>
-          <label className="block text-sm font-semibold text-text-muted mb-1.5">製品種類</label>
+          <label className="block text-[15px] font-semibold text-text-muted mb-1.5">製品種類</label>
           <select
             ref={setFieldRef(0)}
             value={productType}
@@ -148,7 +148,7 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted mb-1.5">材料ID</label>
+          <label className="block text-[15px] font-semibold text-text-muted mb-1.5">材料ID</label>
           <SearchCombobox
             ref={(el) => { fieldRefs.current[1] = el; }}
             options={filteredMaterials.map(m => ({ id: m.id, name: m.name }))}
@@ -161,7 +161,7 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted mb-1.5">切法</label>
+          <label className="block text-[15px] font-semibold text-text-muted mb-1.5">切法</label>
           <select
             ref={setFieldRef(2)}
             value={cuttingMethod}
@@ -176,7 +176,7 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div className="relative">
-          <label className="block text-sm font-semibold text-text-muted mb-1.5 flex items-center gap-1">
+          <label className="block text-[15px] font-semibold text-text-muted mb-1.5 flex items-center gap-1">
             裁切幾種長度
             <button
               type="button"
@@ -198,14 +198,14 @@ export const AddItemForm: React.FC = () => {
             className={inputClass}
           />
           {showHelpTooltip && (
-            <div className="absolute bottom-full left-0 mb-2 p-2 bg-slate-900 dark:bg-slate-700 text-white text-xs rounded-lg whitespace-nowrap z-10">
+            <div className="absolute bottom-full left-0 mb-2 p-2 bg-slate-900 dark:bg-slate-700 text-white text-[15px] rounded-lg whitespace-nowrap z-10">
               輸入共有幾種不同的裁切長度
             </div>
           )}
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted mb-1.5">數量</label>
+          <label className="block text-[15px] font-semibold text-text-muted mb-1.5">數量</label>
           <input
             ref={setFieldRef(4)}
             type="number"
@@ -218,7 +218,7 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted mb-1.5">選擇客戶</label>
+          <label className="block text-[15px] font-semibold text-text-muted mb-1.5">選擇客戶</label>
           <SearchCombobox
             ref={(el) => { fieldRefs.current[5] = el; }}
             options={mockCustomers.map(c => ({ id: c.id, name: c.name }))}
@@ -231,7 +231,7 @@ export const AddItemForm: React.FC = () => {
         </div>
 
         <div>
-          <label className="block text-sm font-semibold text-text-muted mb-1.5">備註</label>
+          <label className="block text-[15px] font-semibold text-text-muted mb-1.5">備註</label>
           <input
             ref={setFieldRef(6)}
             type="text"
@@ -247,40 +247,40 @@ export const AddItemForm: React.FC = () => {
       {/* Material Info and Cost Price Row */}
       {selectedMaterial && (
         <div className="bg-blue-50 dark:bg-slate-700/50 rounded-lg border border-blue-200 dark:border-slate-600 p-4 mb-5">
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 text-sm">
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-7 gap-4 text-[15px]">
             <div>
-              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold">長(mm)</p>
+              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold">長(mm)</p>
               <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.length || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold">寬(mm)</p>
+              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold">寬(mm)</p>
               <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.width || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold">厚度(mm)</p>
+              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold">厚度(mm)</p>
               <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.thickness || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold">截面積(mm²)</p>
+              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold">截面積(mm²)</p>
               <p className="font-semibold text-text-main dark:text-slate-200">{crossSectionArea}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold">重量(kg)</p>
+              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold">重量(kg)</p>
               <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.weight || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400 text-xs font-semibold">進價</p>
+              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold">進價</p>
               <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.buyInPrice ?? '-'}</p>
             </div>
             <div>
-              <label className="text-text-muted dark:text-slate-400 text-xs font-semibold block mb-1">進價成本</label>
+              <label className="text-text-muted dark:text-slate-400 text-[15px] font-semibold block mb-1">進價成本</label>
               <input
                 ref={setFieldRef(7)}
                 type="number"
                 value={costPriceOverride !== '' ? costPriceOverride : selectedMaterial.costPrice || ''}
                 onChange={(e) => setCostPriceOverride(e.target.value === '' ? '' : Number(e.target.value))}
                 onKeyDown={(e) => handleEnterKey(e, 7)}
-                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-sm h-9 px-3 focus:border-primary focus:ring-primary dark:text-slate-200"
+                className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-[15px] h-9 px-3 focus:border-primary focus:ring-primary dark:text-slate-200"
               />
             </div>
           </div>
@@ -292,7 +292,7 @@ export const AddItemForm: React.FC = () => {
         <button
           ref={addButtonRef}
           onClick={handleAdd}
-          className="bg-primary hover:bg-primary-dark text-white font-bold px-6 h-10 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm text-sm"
+          className="bg-primary hover:bg-primary-dark text-white font-bold px-6 h-10 rounded-lg flex items-center justify-center gap-2 transition-all active:scale-95 shadow-sm text-[15px]"
         >
           <Plus size={18} />
           新增

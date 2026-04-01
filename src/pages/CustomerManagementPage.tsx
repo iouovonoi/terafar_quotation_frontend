@@ -39,7 +39,7 @@ export const CustomerManagementPage: React.FC = () => {
             <Users size={24} className="text-primary dark:text-indigo-400" />
             <h2 className="text-lg font-bold text-text-main dark:text-slate-200">客戶名單管理</h2>
           </div>
-          <span className="text-sm font-medium px-3 py-1 bg-background-light dark:bg-slate-900 rounded text-text-muted">
+          <span className="text-[15px] font-medium px-3 py-1 bg-background-light dark:bg-slate-900 rounded text-text-muted">
             共 {filteredCustomers.length} 筆資料
           </span>
         </div>
@@ -47,21 +47,21 @@ export const CustomerManagementPage: React.FC = () => {
         {/* Search and Export */}
         <div className="px-6 py-4 bg-background-light/50 dark:bg-slate-900/50 border-b border-border-light dark:border-border-dark flex gap-4 items-end">
           <div className="flex-1">
-            <label className="block text-xs font-semibold text-text-muted uppercase mb-2">搜尋</label>
+            <label className="block text-[15px] font-semibold text-text-muted uppercase mb-2">搜尋</label>
             <div className="relative">
               <input
                 type="text"
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 placeholder="搜尋公司編號或名稱..."
-                className="w-full bg-white dark:bg-slate-800 border border-border-light dark:border-border-dark rounded-lg px-4 py-2 pl-10 text-sm focus:border-primary focus:ring-primary dark:text-slate-200"
+                className="w-full bg-white dark:bg-slate-800 border border-border-light dark:border-border-dark rounded-lg px-4 py-2 pl-10 text-[15px] focus:border-primary focus:ring-primary dark:text-slate-200"
               />
               <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-text-muted" />
             </div>
           </div>
           <button
             onClick={downloadCsv}
-            className="bg-primary hover:bg-primary-dark text-white font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition-all active:scale-95 text-sm"
+            className="bg-primary hover:bg-primary-dark text-white font-semibold px-4 py-2 rounded-lg flex items-center gap-2 transition-all active:scale-95 text-[15px]"
           >
             <Download size={18} />
             下載 CSV
@@ -71,7 +71,7 @@ export const CustomerManagementPage: React.FC = () => {
         {/* Table */}
         <div className="overflow-x-auto">
           <table className="w-full text-left">
-            <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-xs tracking-wider font-bold">
+            <thead className="bg-background-light/50 dark:bg-slate-900/50 text-text-muted uppercase text-[15px] tracking-wider font-bold">
               <tr>
                 <th className="px-6 py-4">公司編號</th>
                 <th className="px-6 py-4">公司名稱</th>
@@ -81,7 +81,7 @@ export const CustomerManagementPage: React.FC = () => {
               {filteredCustomers.length === 0 ? (
                 <tr>
                   <td colSpan={2} className="px-6 py-8 text-center text-text-muted">
-                    <p className="text-sm">無搜尋結果</p>
+                    <p className="text-[15px]">無搜尋結果</p>
                   </td>
                 </tr>
               ) : (

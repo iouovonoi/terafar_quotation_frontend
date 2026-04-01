@@ -118,7 +118,7 @@ const NavItem: React.FC<NavItemProps> = ({ icon, label, active, isOpen, onClick 
       
       {/* Tooltip for collapsed state */}
       {!isOpen && (
-        <span className="absolute left-16 bg-black text-white text-xs px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
+        <span className="absolute left-16 bg-black text-white text-[15px] px-2 py-1 rounded opacity-0 group-hover:opacity-100 pointer-events-none transition-opacity z-50 whitespace-nowrap">
           {label}
         </span>
       )}
