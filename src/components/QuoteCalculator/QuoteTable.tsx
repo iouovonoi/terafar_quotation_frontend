@@ -185,7 +185,8 @@ export const QuoteTable: React.FC = () => {
               <th className="px-3 py-3 text-center">切法</th>
               <th className="px-3 py-3 text-center">裁切種數</th>
               <th className="px-3 py-3 text-center">數量</th>
-              <th className="px-3 py-3 text-right">進價</th>
+              <th className="px-3 py-3 text-right">進價/KG</th>
+              <th className="px-3 py-3 text-right">進價成本</th>
               <th className="px-3 py-3 text-right">單價</th>
               <th className="px-3 py-3 text-right">金額</th>
               <th className="px-3 py-3">備註</th>
@@ -235,8 +236,20 @@ export const QuoteTable: React.FC = () => {
                     <td className="px-3 py-3 text-center text-[15px] text-text-main dark:text-slate-300">
                       {item.quantity}
                     </td>
-                    <td className="px-3 py-3 text-right text-[15px] text-text-main dark:text-slate-300">
+                    <td className="px-3 py-3 text-right">
+                      <BuyInPriceInput
+                        value={item.buyInPrice || 0}
+                        onChange={(val) => {
+                          const costPrice = Math.round(val * (item.weight || 0) * 100) / 100;
+                          updateItem(item.id, { buyInPrice: val, costPrice });
+                        }}
+                      />
+                    </td>
+                    <td className="px-3 py-3 text-right text-[15px] font-semibold text-text-main dark:text-slate-300">
                       ${item.costPrice.toFixed(2)}
+                      <p className="text-[12px] text-text-muted dark:text-slate-400 mt-0.5">
+                        {item.buyInPrice} × {item.weight}kg
+                      </p>
                     </td>
                     <td className="px-3 py-3 text-right">
                       <div className="inline-flex items-center gap-1">
@@ -334,6 +347,52 @@ export const QuoteTable: React.FC = () => {
         </div>
       )}
     </div>
+  );
+};
+
+// ===== 進價輸入組件（可編輯，輸入時自動計算進價成本）=====
+interface BuyInPriceInputProps {
+  value: number;
+  onChange: (value: number) => void;
+}
+
+const BuyInPriceInput: React.FC<BuyInPriceInputProps> = ({ value, onChange }) => {
+  const [editing, setEditing] = useState(false);
+  const [editValue, setEditValue] = useState('');
+
+  if (editing) {
+    return (
+      <input
+        type="number"
+        step="0.01"
+        autoFocus
+        value={editValue}
+        onChange={(e) => setEditValue(e.target.value)}
+        onBlur={() => {
+          const num = editValue === '' ? 0 : Math.round(Number(editValue) * 100) / 100;
+          onChange(num);
+          setEditing(false);
+        }}
+        onKeyDown={(e) => {
+          if (e.key === 'Enter') {
+            const num = editValue === '' ? 0 : Math.round(Number(editValue) * 100) / 100;
+            onChange(num);
+            setEditing(false);
+          }
+        }}
+        className="w-24 bg-transparent border-0 border-b border-primary dark:border-indigo-400 text-[15px] text-right font-semibold text-text-main dark:text-slate-200 px-1 py-1 focus:ring-0 transition-colors"
+      />
+    );
+  }
+
+  return (
+    <button
+      onClick={() => { setEditValue(value ? String(value) : ''); setEditing(true); }}
+      className="w-24 text-right font-semibold text-text-main dark:text-slate-200 text-[15px] px-1 py-1 border-b border-transparent hover:border-border-light dark:hover:border-border-dark transition-colors cursor-text"
+      title="點擊編輯進價"
+    >
+      {value ? `$${value.toFixed(2)}` : '-'}
+    </button>
   );
 };
 

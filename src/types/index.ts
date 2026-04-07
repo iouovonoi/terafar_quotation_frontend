@@ -48,7 +48,8 @@ export interface QuoteItem {
   numberOfCuttingLengths: number; // 裁切幾種長
   quantity: number;
   customerId: string; // 客戶編號
-  costPrice: number; // 進價成本（可手動調整）
+  buyInPrice: number; // 進價 (e.g., 23.5/KG)
+  costPrice: number; // 進價成本 = 進價 × 全支重量 (自動計算)
   crossSectionArea: number; // 截面積 = 寬 × 厚度
   unitPrice?: number; // ML模型預測的單價
   amount?: number; // 金額 = 單價 × 數量（可手動調整）

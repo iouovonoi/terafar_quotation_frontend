@@ -1,4 +1,4 @@
-import React, { useState, useRef, useMemo } from 'react';
+import React, { useState, useRef, useMemo, useEffect } from 'react';
 import { useQuoteStore } from '../../store/useQuoteStore';
 import { productTypes, mockMaterials, mockCustomers } from '../../data/mockData';
 import { SearchCombobox } from '../SearchCombobox';
@@ -13,7 +13,7 @@ export const AddItemForm: React.FC = () => {
   const [numberOfCuttingLengths, setNumberOfCuttingLengths] = useState<number | ''>('');
   const [quantity, setQuantity] = useState<number | ''>('');
   const [customerId, setCustomerId] = useState('');
-  const [costPriceOverride, setCostPriceOverride] = useState<number | ''>('');
+  const [buyInPrice, setBuyInPrice] = useState<number | ''>('');
   const [note, setNote] = useState('');
   const [error, setError] = useState<string | null>(null);
   const [showHelpTooltip, setShowHelpTooltip] = useState(false);
@@ -21,14 +21,14 @@ export const AddItemForm: React.FC = () => {
   const addButtonRef = useRef<HTMLButtonElement>(null);
 
   // Enter 跳轉用的 refs
-  // 順序: 0=製品種類, 1=材料ID, 2=切法, 3=裁切幾種長度, 4=數量, 5=客戶編號, 6=備註, 7=進價成本
+  // 順序: 0=製品種類, 1=材料ID, 2=切法, 3=裁切幾種長度, 4=數量, 5=客戶編號, 6=備註, 7=進價
   const fieldRefs = useRef<(HTMLSelectElement | HTMLInputElement | SearchComboboxRef | null)[]>([]);
   const setFieldRef = (index: number) => (el: HTMLSelectElement | HTMLInputElement | null) => {
     fieldRefs.current[index] = el;
   };
 
   const focusNext = (currentIndex: number) => {
-    // 如果是最後一個欄位或進價成本，觸發新增
+    // 如果是最後一個欄位（進價），觸發新增
     const maxIndex = selectedMaterial ? 7 : 6;
     if (currentIndex >= maxIndex) {
       addButtonRef.current?.focus();
@@ -61,6 +61,15 @@ export const AddItemForm: React.FC = () => {
   // 取得當前選擇的材料
   const selectedMaterial = mockMaterials.find(m => m.id === materialId);
 
+  // 當選擇材料時，自動填入進價和計算進價成本
+  useEffect(() => {
+    if (selectedMaterial && selectedMaterial.buyInPrice) {
+      setBuyInPrice(selectedMaterial.buyInPrice);
+    } else {
+      setBuyInPrice('');
+    }
+  }, [materialId]);
+
   // 計算截面積
   const crossSectionArea = selectedMaterial && selectedMaterial.width && selectedMaterial.thickness
     ? Math.round(selectedMaterial.width * selectedMaterial.thickness * 100) / 100
@@ -88,8 +97,14 @@ export const AddItemForm: React.FC = () => {
       setError('請輸入客戶編號');
       return;
     }
+    if (buyInPrice === '') {
+      setError('進價未填入');
+      return;
+    }
 
-    const costPrice = costPriceOverride !== '' ? costPriceOverride : (selectedMaterial.costPrice || 0);
+    // 計算進價成本 = 進價 × 全支重量
+    const weight = selectedMaterial.weight || 0;
+    const calculatedCostPrice = Math.round((buyInPrice as number) * weight * 100) / 100;
 
     addItem({
       productType,
@@ -98,20 +113,23 @@ export const AddItemForm: React.FC = () => {
       length: selectedMaterial.length || 0,
       width: selectedMaterial.width || 0,
       thickness: selectedMaterial.thickness || 0,
-      weight: selectedMaterial.weight || 0,
+      weight,
       cuttingMethod,
       numberOfCuttingLengths: numberOfCuttingLengths as number,
       quantity: quantity as number,
       customerId,
-      costPrice: costPrice as number,
+      buyInPrice: buyInPrice as number,
+      costPrice: calculatedCostPrice,
       crossSectionArea,
       note: note.trim() || undefined,
     });
 
     // Reset form
+    setProductType('');
+    setMaterialId('');
     setNumberOfCuttingLengths('');
     setQuantity('');
-    setCostPriceOverride('');
+    setBuyInPrice('');
     setCustomerId('');
     setNote('');
     setError(null);
@@ -269,21 +287,32 @@ export const AddItemForm: React.FC = () => {
               <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.weight || '-'}</p>
             </div>
             <div>
-              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold">進價</p>
-              <p className="font-semibold text-text-main dark:text-slate-200">{selectedMaterial.buyInPrice ?? '-'}</p>
-            </div>
-            <div>
-              <label className="text-text-muted dark:text-slate-400 text-[15px] font-semibold block mb-1">進價成本</label>
+              <label className="text-text-muted dark:text-slate-400 text-[15px] font-semibold block mb-1">進價/KG</label>
               <input
                 ref={setFieldRef(7)}
                 type="number"
-                value={costPriceOverride !== '' ? costPriceOverride : selectedMaterial.costPrice || ''}
-                onChange={(e) => setCostPriceOverride(e.target.value === '' ? '' : Number(e.target.value))}
+                step="0.01"
+                value={buyInPrice}
+                onChange={(e) => setBuyInPrice(e.target.value === '' ? '' : Number(e.target.value))}
                 onKeyDown={(e) => handleEnterKey(e, 7)}
+                placeholder="例如: 23.5"
                 className="w-full bg-white dark:bg-slate-900 border border-border-light dark:border-border-dark rounded-lg text-[15px] h-9 px-3 focus:border-primary focus:ring-primary dark:text-slate-200"
               />
             </div>
+            <div>
+              <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold block mb-1">進價成本</p>
+              <p className="font-semibold text-text-main dark:text-slate-200 h-9 flex items-center px-3">
+                {buyInPrice !== '' && buyInPrice !== 0
+                  ? `$${(Math.round((buyInPrice as number) * (selectedMaterial.weight || 0) * 100) / 100).toFixed(2)}`
+                  : '-'}
+              </p>
+            </div>
           </div>
+          {buyInPrice !== '' && buyInPrice !== 0 && selectedMaterial.weight && (
+            <p className="text-[13px] text-text-muted dark:text-slate-400 mt-2">
+              計算方式: {buyInPrice}/KG × {selectedMaterial.weight}KG = ${(Math.round((buyInPrice as number) * selectedMaterial.weight * 100) / 100).toFixed(2)}/支
+            </p>
+          )}
         </div>
       )}
 
