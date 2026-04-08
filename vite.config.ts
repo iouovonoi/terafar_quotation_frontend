@@ -18,10 +18,8 @@ export default defineConfig({
     allowedHosts: [
       'localhost',
       '127.0.0.1',
-      '8d42-220-132-201-204.ngrok-free.app',
-      'd8e4-114-26-14-36.ngrok-free.app',
-      '*.ngrok-free.app',  // 允許所有 ngrok 域名
-      '*.ngrok.io'  // 如果升級到付費方案
+      '.ngrok-free.app',  // 允許所有 *.ngrok-free.app 子域名
+      '.ngrok.io'  // 如果升級到付費方案
     ]
   }
 })

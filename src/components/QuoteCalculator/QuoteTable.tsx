@@ -196,7 +196,7 @@ export const QuoteTable: React.FC = () => {
           <tbody className="divide-y divide-border-light dark:divide-border-dark">
             {items.length === 0 ? (
               <tr>
-                <td colSpan={11} className="px-4 py-12 text-center text-text-muted">
+                <td colSpan={12} className="px-4 py-12 text-center text-text-muted">
                   <div className="flex flex-col items-center justify-center gap-2">
                     <Inbox size={36} className="opacity-50" />
                     <p className="text-base">目前無資料，請從上方新增項目</p>
@@ -247,7 +247,7 @@ export const QuoteTable: React.FC = () => {
                     </td>
                     <td className="px-3 py-3 text-right text-[15px] font-semibold text-text-main dark:text-slate-300">
                       ${item.costPrice.toFixed(2)}
-                      <p className="text-[12px] text-text-muted dark:text-slate-400 mt-0.5">
+                      <p className="text-[15px] text-text-muted dark:text-slate-400 mt-0.5">
                         {item.buyInPrice} × {item.weight}kg
                       </p>
                     </td>

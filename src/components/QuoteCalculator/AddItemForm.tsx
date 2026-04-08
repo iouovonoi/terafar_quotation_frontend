@@ -68,12 +68,15 @@ export const AddItemForm: React.FC = () => {
     } else {
       setBuyInPrice('');
     }
-  }, [materialId]);
+  }, [selectedMaterial]);
 
   // 計算截面積
   const crossSectionArea = selectedMaterial && selectedMaterial.width && selectedMaterial.thickness
     ? Math.round(selectedMaterial.width * selectedMaterial.thickness * 100) / 100
     : 0;
+
+  // 計算進價成本 = 進價 × 全支重量
+  const calcCostPrice = (price: number, weight: number) => Math.round(price * weight * 100) / 100;
 
   const handleAdd = () => {
     // 驗證
@@ -104,7 +107,7 @@ export const AddItemForm: React.FC = () => {
 
     // 計算進價成本 = 進價 × 全支重量
     const weight = selectedMaterial.weight || 0;
-    const calculatedCostPrice = Math.round((buyInPrice as number) * weight * 100) / 100;
+    const calculatedCostPrice = calcCostPrice(buyInPrice as number, weight);
 
     addItem({
       productType,
@@ -303,14 +306,14 @@ export const AddItemForm: React.FC = () => {
               <p className="text-text-muted dark:text-slate-400 text-[15px] font-semibold block mb-1">進價成本</p>
               <p className="font-semibold text-text-main dark:text-slate-200 h-9 flex items-center px-3">
                 {buyInPrice !== '' && buyInPrice !== 0
-                  ? `$${(Math.round((buyInPrice as number) * (selectedMaterial.weight || 0) * 100) / 100).toFixed(2)}`
+                  ? `$${calcCostPrice(buyInPrice as number, selectedMaterial.weight || 0).toFixed(2)}`
                   : '-'}
               </p>
             </div>
           </div>
           {buyInPrice !== '' && buyInPrice !== 0 && selectedMaterial.weight && (
-            <p className="text-[13px] text-text-muted dark:text-slate-400 mt-2">
-              計算方式: {buyInPrice}/KG × {selectedMaterial.weight}KG = ${(Math.round((buyInPrice as number) * selectedMaterial.weight * 100) / 100).toFixed(2)}/支
+            <p className="text-[15px] text-text-muted dark:text-slate-400 mt-2">
+              計算方式: {buyInPrice}/KG × {selectedMaterial.weight}KG = ${calcCostPrice(buyInPrice as number, selectedMaterial.weight).toFixed(2)}/支
             </p>
           )}
         </div>
