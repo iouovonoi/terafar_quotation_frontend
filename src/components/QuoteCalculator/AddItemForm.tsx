@@ -108,6 +108,7 @@ export const AddItemForm: React.FC = () => {
     // 計算進價成本 = 進價 × 全支重量
     const weight = selectedMaterial.weight || 0;
     const calculatedCostPrice = calcCostPrice(buyInPrice as number, weight);
+    const selectedCustomer = mockCustomers.find(c => c.id === customerId);
 
     addItem({
       productType,
@@ -121,6 +122,7 @@ export const AddItemForm: React.FC = () => {
       numberOfCuttingLengths: numberOfCuttingLengths as number,
       quantity: quantity as number,
       customerId,
+      customerName: selectedCustomer?.name || customerId,
       buyInPrice: buyInPrice as number,
       costPrice: calculatedCostPrice,
       crossSectionArea,

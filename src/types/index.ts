@@ -1,3 +1,9 @@
+/*
+ * @Author: ChiaEnKang
+ * @Date: 2026-04-08 10:19:48
+ * @LastEditors: ChiaEnKang
+ * @LastEditTime: 2026-04-08 11:03:32
+ */
 export interface SquareTube {
   modelNumber: string; // e.g., 'BJ00127012'
   buyInPrice: number; // 進價
@@ -48,6 +54,7 @@ export interface QuoteItem {
   numberOfCuttingLengths: number; // 裁切幾種長
   quantity: number;
   customerId: string; // 客戶編號
+  customerName: string; // 客戶名稱
   buyInPrice: number; // 進價 (e.g., 23.5/KG)
   costPrice: number; // 進價成本 = 進價 × 全支重量 (自動計算)
   crossSectionArea: number; // 截面積 = 寬 × 厚度

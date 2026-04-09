@@ -221,7 +221,7 @@ export const QuoteTable: React.FC = () => {
                     </td>
                     <td className="px-4 py-3">
                       <p className="font-bold text-text-main dark:text-slate-200">{item.materialId}</p>
-                      <p className="text-[15px] text-text-muted">{item.customerId}</p>
+                      <p className="text-[15px] text-text-muted">{item.customerName}</p>
                     </td>
                     <td className="px-3 py-3 text-center text-[15px] text-text-main dark:text-slate-300">
                       <span>{item.length}×{item.width}×{item.thickness}</span>
@@ -601,7 +601,7 @@ const SlideCalculatorPanel: React.FC<SlideCalculatorPanelProps> = ({ item, initi
       <div className="px-5 py-3 bg-background-light/50 dark:bg-slate-900/30 border-b border-border-light dark:border-border-dark shrink-0">
         <p className="font-bold text-text-main dark:text-slate-200">{item.materialId}</p>
         <p className="text-[15px] text-text-muted mt-0.5">
-          {item.length}×{item.width}×{item.thickness}mm ・ {item.quantity} 個 ・ 客戶 {item.customerId}
+          {item.length}×{item.width}×{item.thickness}mm ・ {item.quantity} 個 ・ 客戶 {item.customerName}
         </p>
       </div>
 
